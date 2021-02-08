@@ -1,20 +1,20 @@
 # Getting Started
 
-## What is Typescript
+## What is TypeScript
 
-Typescript is a programming language but it's also a tool. It's a powerful compiler which you run over your code to compile your typescript code to JavaScript.
+TypeScript is a programming language but it's also a tool. It's a powerful compiler which you run over your code to compile your TypeScript code to JavaScript.
 
-So what you get as a result when writing code in typescript is JavaScript but you didn't write that JavaScript code instead you wrote typescript code with all the new features and all the advantages and you get normal JavaScript code.
+So what you get as a result when writing code in TypeScript is JavaScript but you didn't write that JavaScript code instead you wrote TypeScript code with all the new features and all the advantages and you get normal JavaScript code.
 
-Well that of course brings up one important question how can typescript add new features if what you get in the end is regular JavaScript. The answer is the typescript compiler compiles these new features to JavaScript work arounds.
+Well that of course brings up one important question how can TypeScript add new features if what you get in the end is regular JavaScript. The answer is the TypeScript compiler compiles these new features to JavaScript work arounds.
 
 Of course it can't add what's not possible at all in the JavaScript language but it can add new features that simply are easier to use with a nicer syntax.
 
-In addition Typescript of course does one important thing which the name already implies.
+In addition TypeScript of course does one important thing which the name already implies.
 
 It adds **types**. It adds a feature to the JavaScript language which will actually give you as a developer an opportunity of identifying errors in your code before your script runs.
 
-So why would we use typescript? Consider this example, a fairly simple JavaScript function which adds two numbers.
+So why would we use TypeScript? Consider this example, a fairly simple JavaScript function which adds two numbers.
 
 #### HTML
 
@@ -64,11 +64,11 @@ A simple fix for this would be.
 
 Wouldn't it be nice if we could catch errors like this during development before we run our code?
 
-Thankfully this is possible with Typescript because developers can write invalid code and introduce bugs like this in JavaScript but with Typescript we have a tool that helps us write better code and avoid such problems.
+Thankfully this is possible with TypeScript because developers can write invalid code and introduce bugs like this in JavaScript but with TypeScript we have a tool that helps us write better code and avoid such problems.
 
 So let's have a closer look at this.
 
-#### Typescript
+#### TypeScript
 
 ```
     const button = document.querySelector("button")!;
@@ -86,7 +86,7 @@ So let's have a closer look at this.
 
 **Note:** in the **button** statement we have added an exclamation mark at the end of the statement. This stops a possible null exception error. We know that there will be input values added.
 
-In our Typescript file we get the following error.
+In our TypeScript file we get the following error.
 
 > src/using-ts.ts:10:19 - error TS2345: Argument of type 'string' is not assignable to > parameter of type 'number'.
 >
@@ -94,7 +94,7 @@ In our Typescript file we get the following error.
 
 `input1.value` and `input2.value` are strings and they are being passed as arguments into the `add()` function which only allows for numbers as input.
 
-Typescript has picked up errors that can be fixed before the program is run.
+TypeScript has picked up errors that can be fixed before the program is run.
 
 We can fix these errors by adding a typecasting **+** sign before each input value that casts the input values as numbers and we are now sending numbers as arguments.
 
@@ -106,6 +106,20 @@ This is so much easier than what we were doing to fix the JavaScript code in the
 
 Now you can run your code in the browser and add sume numbers and then make sure that they are giving you the right sum as output.
 
-### Typescript overview
+## TypeScript Overview
 
-![Typescript overview](assets/images/typescript-overview.jpg "Typescript overview")
+![TypeScript overview](assets/images/TypeScript-overview.jpg "TypeScript overview")
+
+## Course Outline
+
+![Course Outline](assets/images/course-outline.jpg "Course Outline")
+
+## Setting up your code editor
+
+### Prettier
+
+To get Prettier to work for your project.
+
+> Shift-Alt-F
+
+You will be asked what formatter you want to use so select Prettier and now when you do a save, Prettier will format your code and add any missing semi-colons.
