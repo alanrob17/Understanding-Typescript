@@ -6,7 +6,7 @@ TypeScript is a programming language but it's also a tool. It's a powerful compi
 
 So what you get as a result when writing code in TypeScript is JavaScript but you didn't write that JavaScript code instead you wrote TypeScript code with all the new features and all the advantages and you get normal JavaScript code.
 
-Well that of course brings up one important question how can TypeScript add new features if what you get in the end is regular JavaScript. The answer is the TypeScript compiler compiles these new features to JavaScript work arounds.
+Well that of course brings up one important question: how can TypeScript add new features if what you get in the end is regular JavaScript. The answer is the TypeScript compiler compiles these new features to JavaScript work arounds.
 
 Of course it can't add what's not possible at all in the JavaScript language but it can add new features that simply are easier to use with a nicer syntax.
 
@@ -40,7 +40,7 @@ So why would we use TypeScript? Consider this example, a fairly simple JavaScrip
     });
 ```
 
-Notice that we are passing in two strings (_input1.value_, _input2.value_) instead of two numbers. What we would actually get here is probably an unwanted behavior because if you add two strings JavaScript will concatinate the strings instead of doing a mathematical calculation here. Any input from HTML fields will allways be strings.
+Notice that we are passing in two strings (_input1.value_, _input2.value_) instead of two numbers. What we would actually get here is probably an unwanted behavior because if you add two strings JavaScript will concatenate the strings instead of doing a mathematical calculation here. Any input from HTML fields will always be strings.
 
 If we enter 2, 3 as inputs the result would not be 5 but 23, the concatenated string of the two numbers.
 
@@ -104,7 +104,7 @@ We can fix these errors by adding a typecasting **+** sign before each input val
 
 This is so much easier than what we were doing to fix the JavaScript code in the previous example.
 
-Now you can run your code in the browser and add sume numbers and then make sure that they are giving you the right sum as output.
+Now you can run your code in the browser and add some numbers and then make sure that they are giving you the right sum as output.
 
 ## TypeScript Overview
 
@@ -122,4 +122,4 @@ To get Prettier to work for your project.
 
 > Shift-Alt-F
 
-You will be asked what formatter you want to use so select Prettier and now when you do a save, Prettier will format your code and add any missing semi-colons.
+You will be asked what formatter you want to use so select Prettier and now when you do a save, Prettier will format your code and add any missing semicolons.

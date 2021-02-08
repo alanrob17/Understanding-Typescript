@@ -1,0 +1,167 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta http-equiv="X-UA-Compatible" content="ie=edge">
+<title>Understanding TypeScript</title>
+<link href="assets/css/bootstrap.css" rel="stylesheet">
+<!-- Custom styles for this template -->
+<link href="assets/css/starter-template.css" rel="stylesheet">
+<script src="https://cdn.rawgit.com/google/code-prettify/master/loader/run_prettify.js?lang=css&amp;skin=sunburst"></script>
+<style type="text/css">
+h2 {
+	margin-top: 60px;
+}
+
+h4, h3 {
+	padding-top: 40px!;		
+}
+
+p {
+	font-size: 1.2em;
+}
+h4 {
+	font-size: 1.4em;
+}
+
+img, pre.prettyprint {
+	margin-top: 1.5em;
+	margin-bottom: 1.5em;
+}
+h1, h2, h3, h4, h5, h6 {
+    color:#007bff;
+
+}
+blockquote {
+    border-left: 4px solid #999;
+    padding-left: 1rem;
+    page-break-inside: avoid;
+}
+</style>
+</head>
+<body>
+<header>
+    <nav class="navbar navbar-expand-md navbar-dark fixed-top bg-primary">
+        <div class="container">
+            <a class="navbar-brand" href="#">Understanding TypeScript - 2021</a>
+            <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarCollapse"
+                aria-controls="navbarCollapse" aria-expanded="false" aria-label="Toggle navigation">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+            <div class="collapse navbar-collapse" id="navbarCollapse">
+                <ul class="navbar-nav mr-auto">
+                    <li class="nav-item">
+                        <a class="nav-link" href="#">Home</a>
+                    </li>
+                    <li class="nav-item active">
+                        <a class="nav-link" href="#">01 - Getting Started <span class="sr-only">(current)</span></a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="#">About</a>
+                    </li>
+                </ul>
+            </div>
+        </div>
+    </nav>
+</header>
+<div class="container">
+    <div class="starter-template">
+
+<h1 id="getting-started">Getting Started</h1>
+<h2 id="what-is-typescript">What is TypeScript</h2>
+<p>TypeScript is a programming language but it's also a tool. It's a powerful compiler which you run over your code to compile your TypeScript code to JavaScript.</p>
+<p>So what you get as a result when writing code in TypeScript is JavaScript but you didn't write that JavaScript code instead you wrote TypeScript code with all the new features and all the advantages and you get normal JavaScript code.</p>
+<p>Well that of course brings up one important question: how can TypeScript add new features if what you get in the end is regular JavaScript. The answer is the TypeScript compiler compiles these new features to JavaScript work arounds.</p>
+<p>Of course it can't add what's not possible at all in the JavaScript language but it can add new features that simply are easier to use with a nicer syntax.</p>
+<p>In addition TypeScript of course does one important thing which the name already implies.</p>
+<p>It adds <strong>types</strong>. It adds a feature to the JavaScript language which will actually give you as a developer an opportunity of identifying errors in your code before your script runs.</p>
+<p>So why would we use TypeScript? Consider this example, a fairly simple JavaScript function which adds two numbers.</p>
+<h4 id="html">HTML</h4>
+<pre class="prettyprint">    &lt;input type=&quot;number&quot; id=&quot;num1&quot; placeholder=&quot;Number 1&quot; /&gt;
+    &lt;input type=&quot;number&quot; id=&quot;num2&quot; placeholder=&quot;Number 2&quot; /&gt;
+    &lt;button&gt;Add!&lt;/button&gt;
+</pre>
+<h4 id="javascript">JavaScript</h4>
+<pre class="prettyprint">    const button = document.querySelector(&quot;button&quot;);
+    const input1 = document.getElementById(&quot;num1&quot;);
+    const input2 = document.getElementById(&quot;num2&quot;);
+
+    function add(num1, num2) {
+      return num1 + num2;
+    }
+
+    button.addEventListener(&quot;click&quot;, function() {
+      console.log(add(input1.value, input2.value));
+    });
+</pre>
+<p>Notice that we are passing in two strings (<em>input1.value</em>, <em>input2.value</em>) instead of two numbers. What we would actually get here is probably an unwanted behavior because if you add two strings JavaScript will concatenate the strings instead of doing a mathematical calculation here. Any input from HTML fields will always be strings.</p>
+<p>If we enter 2, 3 as inputs the result would not be 5 but 23, the concatenated string of the two numbers.</p>
+<p>This is an error you could have in JavaScript. It's not a technical error. You probably won't get a runtime error but you have a logical mistake in your code and that of course can lead to huge problems in the web applications you're writing with JavaScript.</p>
+<p>Now of course in JavaScript we have mitigation strategies.</p>
+<p>We could add an <code>if</code> check in the function to check the types of the inputs at runtime. We could also validate and sanitise user input.</p>
+<p>A simple fix for this would be.</p>
+<pre class="prettyprint">    function add(num1, num2) {
+      if (typeof(num1) === 'number' &amp;&amp; typeof(num1) === 'number') {
+        return num1 + num2;
+      } else {
+        return +num1 + +num2;
+      }
+    }
+</pre>
+<p>Wouldn't it be nice if we could catch errors like this during development before we run our code?</p>
+<p>Thankfully this is possible with TypeScript because developers can write invalid code and introduce bugs like this in JavaScript but with TypeScript we have a tool that helps us write better code and avoid such problems.</p>
+<p>So let's have a closer look at this.</p>
+<h4 id="typescript">TypeScript</h4>
+<pre class="prettyprint">    const button = document.querySelector(&quot;button&quot;)!;
+    const input1 = document.getElementById(&quot;num1&quot;)! as HTMLInputElement;
+    const input2 = document.getElementById(&quot;num2&quot;)! as HTMLInputElement;
+
+    function add(num1: number, num2: number) {
+      return num1 + num2;
+    }
+
+    button.addEventListener(&quot;click&quot;, function() {
+      console.log(add(input1.value, input2.value));
+    });
+</pre>
+<p><strong>Note:</strong> in the <strong>button</strong> statement we have added an exclamation mark at the end of the statement. This stops a possible null exception error. We know that there will be input values added.</p>
+<p>In our TypeScript file we get the following error.</p>
+<blockquote>
+<p>src/using-ts.ts:10:19 - error TS2345: Argument of type 'string' is not assignable to &gt; parameter of type 'number'.</p>
+<p>10 console.log(add(input1.value, input2.value));</p>
+</blockquote>
+<p><code>input1.value</code> and <code>input2.value</code> are strings and they are being passed as arguments into the <code>add()</code> function which only allows for numbers as input.</p>
+<p>TypeScript has picked up errors that can be fixed before the program is run.</p>
+<p>We can fix these errors by adding a typecasting <strong>+</strong> sign before each input value that casts the input values as numbers and we are now sending numbers as arguments.</p>
+<pre class="prettyprint">    console.log(add(+input1.value, +input2.value));
+</pre>
+<p>This is so much easier than what we were doing to fix the JavaScript code in the previous example.</p>
+<p>Now you can run your code in the browser and add some numbers and then make sure that they are giving you the right sum as output.</p>
+<h2 id="typescript-overview">TypeScript Overview</h2>
+<p><img src="assets/images/typescript-overview.jpg" alt="TypeScript overview" title="TypeScript overview"></p>
+<h2 id="course-outline">Course Outline</h2>
+<p><img src="assets/images/course-outline.jpg" alt="Course Outline" title="Course Outline"></p>
+<h2 id="setting-up-your-code-editor">Setting up your code editor</h2>
+<h3 id="prettier">Prettier</h3>
+<p>To get Prettier to work for your project.</p>
+<blockquote>
+<p>Shift-Alt-F</p>
+</blockquote>
+<p>You will be asked what formatter you want to use so select Prettier and now when you do a save, Prettier will format your code and add any missing semicolons.</p>
+
+</div><!-- starter-template -->
+</div><!-- /.container -->
+
+
+<!-- Bootstrap core JavaScript
+================================================== -->
+<!-- Placed at the end of the document so the pages load faster -->
+<script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/9.12.0/styles/default.min.css"/>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/9.12.0/highlight.min.js"/>
+<script>hljs.initHighlightingOnLoad();</script>
+
+<script src="assets/js/jquery.min.js"></script>
+<script src="assets/js/bootstrap.min.js"></script>
+</body>
+</html>
