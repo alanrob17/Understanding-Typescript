@@ -108,7 +108,7 @@ Now you can run your code in the browser and add sume numbers and then make sure
 
 ## TypeScript Overview
 
-![TypeScript overview](assets/images/TypeScript-overview.jpg "TypeScript overview")
+![TypeScript overview](assets/images/typescript-overview.jpg "TypeScript overview")
 
 ## Course Outline
 
