@@ -463,7 +463,48 @@ When you use an ``any`` type you can use any value you want. This defeats the pu
 
 ## The Union type
 
-We have a simple function to add a couple of peoples ages.
+The union type allow us to add one or more types to a variable or array.
+
+In a variable we can set the type where multiple types could be required. In the following example we are saying that the ``uid`` variable can be either a string or number.
+
+```
+    let uid: string | number;
+
+    uid = 456;
+    uid = '123';
+
+    if (typeof uid !== 'number') {
+        uid = +uid;
+    }
+
+    console.log(`uid's type is ${typeof uid}.`);
+    console.log(`The value is ${uid}.`);
+```
+
+> uid's type is number.     
+> The value is 123.
+
+**Note:** This gives us some flexibilty with types but we have to be careful when using the variable to make sure we cast it to the correct type.
+
+Another example of union types is to create an array of mixed types.
+
+```
+    const mixed: (string | number | boolean)[] = [];
+
+    mixed.push('Alan');
+    mixed.push(27);
+    mixed.push(true);
+
+    mixed.forEach(item => {
+        console.log(item);
+    });
+```
+
+> Alan      
+> 27        
+> true
+
+In our final example we have a simple function to add a couple of people's ages.
 
 ```
     const combine = (input1: number, input2: number) => {
@@ -520,25 +561,272 @@ We can improve on this code to remove the error.
 > 60        
 > AlanCharley
 
-You won't alway have to use error checking with union types but sometimes you will need to.
-
-Another example of union types is to create an array of mixed types.
-
-```
-    const mixed: (string | number | boolean)[] = [];
-
-    mixed.push('Alan');
-    mixed.push(27);
-    mixed.push(true);
-
-    mixed.forEach(item => {
-        console.log(item);
-    });
-```
-
-> Alan      
-> 27        
-> true
+You won't always have to use error checking with union types but sometimes you will need to.
 
 ## Literal types
 
+Union types allow us to set one or more types in an array or variable. We can also use multiple literal types.
+
+A simple example.
+
+```
+    type CardinalDirection = | 'North' | 'East' | 'South' | 'West';
+    
+    function move(distance: number, direction: CardinalDirection) {
+        // ...
+    }
+    
+    move(1, 'North'); // okay
+    move(1, 'Nurth'); // error
+```
+
+Literal types can be used for number or strings and are especially useful for strings.
+
+In our ``combine()`` function example above we are expecting a string or number type as our input. We could describe this type by using a third parameter named ``resultConversion`` which we describe as a string so we will set it as type string.
+
+```
+    const combine = (input1: number | string, input2: number | string, resultConversion: string) => {
+        let result;
+        if (typeof input1 === 'number' && typeof input2 === 'number' || resultConversion === 'as-number') {
+            result = +input1 + +input2;
+        } else {
+            result = input1.toString() + input2.toString();
+        }
+
+        return result;
+    }
+
+    const combinedAges = combine(36, 24, 'as-number');
+    console.log(combinedAges);
+
+    const combinedStringAges = combine('36', '24', 'as-number');
+    console.log(combinedStringAges);
+
+    const combinedNames = combine('Alan', 'Charley', 'as-text');
+    console.log(combinedNames);
+```
+
+> 60        
+> 60      
+> AlanCharley
+
+This is working as expected and in our arguments we are using either 'as-number' or 'as-text'. If we return anything else as a string literal we will cause problems in the ``if`` test and probably not get the correct result.
+
+We can use TypeScript to force us to use either of the string literals but no other string as input for the third argument.
+
+We can change.
+
+```
+    resultConversion: string
+```
+
+to a literal type.
+
+```
+    resultConversion: 'as-number' | 'as-text'
+```
+
+Now, if we enter the folllowing it will be an error.
+
+```
+    const combinedStringAges = combine('36', '24', 'as-numb'); // error
+```
+
+## Type aliases - Custom types
+
+We can create our own type aliases (``Combinable``).
+
+```
+    type Combinable = number | string;
+
+    const combine = (input1: Combinable, input2: Combinable, resultConversion: 'as-number' | 'as-text') => {
+```
+
+We can also create custom types (``ConversionDescriptor``).
+
+```
+type Combinable = number | string;
+type ConversionDescriptor = 'as-number' | 'as-text';
+
+const combine = (input1: Combinable, input2: Combinable, resultConversion: ConversionDescriptor) => {
+```
+
+The end result of using type aliases and custom types is that our parameter variable are much cleaner looking and it saves us some typing.
+
+When we compile we end up with the following complicated piece of JavaScript that TypeScript saves us having to create.
+
+#### JavaScript
+
+```
+    const combine = (input1, input2, resultConversion) => {
+        let result;
+        if (typeof input1 === 'number' && typeof input2 === 'number' || resultConversion === 'as-number') {
+            result = +input1 + +input2;
+        }
+        else {
+            result = input1.toString() + input2.toString();
+        }
+        return result;
+    };
+```
+
+The completed ``combine()`` function.
+
+```
+    type Combinable = number | string;
+    type ConversionDescriptor = 'as-number' | 'as-text';
+
+    const combine = (input1: Combinable, input2: Combinable, resultConversion: ConversionDescriptor) => {
+        let result;
+        if (typeof input1 === 'number' && typeof input2 === 'number' || resultConversion === 'as-number') {
+            result = +input1 + +input2;
+        } else {
+            result = input1.toString() + input2.toString();
+        }
+
+        return result;
+    }
+
+    const combinedAges = combine(36, 24, 'as-number');
+    console.log(combinedAges);
+
+    const combinedStringAges = combine('36', '24', 'as-number');
+    console.log(combinedStringAges);
+
+    const combinedNames = combine('Alan', 'Charley', 'as-text');
+    console.log(combinedNames);
+```
+
+## Type Aliases and Object types
+
+Type aliases can be used to create your own types. You are not limited to using uinion types though - you can also provide an alias to a complex object type.
+
+The following routine is not using type aliases.
+
+```
+    const greet = (user: { name: string; age: number }) => {
+        console.log('Hi, I am ' + user.name);
+    }
+
+    const isOlder = (user: { name: string; age: number }, checkAge: number) => {
+        return checkAge <= user.age;
+    }
+
+    const u1 = { name: 'James', age: 14 };
+    const votingAge = 18;
+
+    greet(u1);
+
+    const ofAge = isOlder(u1, votingAge);
+
+    if (ofAge) {
+        console.log(`${u1.name} is of voting age.`);
+    } else {
+        console.log(`${u1.name} is too young to vote.`);
+    }
+```
+
+> Hi, I am James        
+> James is too young to vote.
+
+We can add type aliases to reduce the amount of typing we do. In the previous example we could have created the following type alias for an object type.
+
+```
+    type User = { name: string; age: number };
+```
+
+Adding this to the previous example would now look like this.
+
+```
+    type User = { name: string; age: number };
+
+    const greet = (user: User) => {
+        console.log('Hi, I am ' + user.name);
+    }
+
+    const isOlder = (user: User, checkAge: number) => {
+        return checkAge <= user.age;
+    }
+
+    const u1: User = { name: 'James', age: 14 };
+    const votingAge = 18;
+
+    greet(u1);
+
+    const ofAge = isOlder(u1, votingAge);
+
+    if (ofAge) {
+        console.log(`${u1.name} is of voting age.`);
+    } else {
+        console.log(`${u1.name} is too young to vote.`);
+    }
+```
+
+> Hi, I am James        
+> James is too young to vote.
+
+This makes the parameters in both functions look cleaner.
+
+#### Quiz
+
+Will this code make it through compilation?
+
+```
+    type User = { name: string } | string;
+    let u1: User = {name: 'Max'};
+    u1 = 'Michael';
+```
+
+> This code is fine. The union type allows either an object (with a "name" property) OR a string. You can switch values how often you want.
+
+## Function Return Types & "void"
+
+If you have a function you can hover over the function name and it will show you the return type.
+
+```
+    const add = (num1: number, num2: number) => {
+        return num1 + num2;
+    }
+```
+
+Hovering over the function name produces this message.
+
+![Function return type](assets/images/function-return-type.jpg "Function return type")
+
+So TypeScript infers the return type from the return statement variables.
+
+What if the function doesn't have a return value? TypeScript has a special type that is returned in this case and it is a type of ``void``.
+
+```
+    const printResult = (num: number) => {
+        console.log(`Result: ${num}`);
+    }
+```
+
+This function doesn't have a return type and you can actually add a return type to the function if you want. In the case of no return value TypeScript gives us the return type of ``void``.
+
+```
+    const printResult = (num: number): void => {
+        console.log(`Result: ${num}`);
+    }
+```
+
+In most cases this isn't necessary because TypeScript infers the type value.
+
+```
+    const add = (num1: number, num2: number) => {
+        return num1 + num2;
+    }
+
+    const printResult = (num: number): void => {
+        console.log(`Result: ${num}`);
+    }
+
+    printResult(add(7, 16));
+```
+
+> Result: 23
+
+If you hover over the ``printResult()`` function you will get a ``void`` return type.
+
+![Void return type](assets/images/void-return-type.jpg "Void return type")
