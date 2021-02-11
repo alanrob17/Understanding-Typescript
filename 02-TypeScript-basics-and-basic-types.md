@@ -22,9 +22,9 @@
 
 > 7.8
 
-**Note:** my TypeScript seems to be stricter than the video version. In my case I had to add type assiggnment to the function parameters. If I don't do this I get an error because the type is ``any``.
+**Note:** my TypeScript seems to be stricter than the video version. In my case I had to add type assignment to the function parameters. If I don't do this I get an error because the type is ``any``.
 
-**Note:** TypeScript's type system only helps you during development (befor you compile). It does not change your runtime code.
+**Note:** TypeScript's type system only helps you during development (before you compile). It does not change your runtime code.
 
 ## TypeScript types versus JavaScript types
 
@@ -40,7 +40,7 @@ In JavaScript we can add error checking to make sure that the user isn't using v
     }
 ```
 
-This can be avoided if we are using TypeScript and is redundent work. When we are working in JavaScript you are continually using defensive programming like the code above to avoid errors. TypeScript frees us from this burden.
+This can be avoided if we are using TypeScript and is redundant work. When we are working in JavaScript you are continually using defensive programming like the code above to avoid errors. TypeScript frees us from this burden.
 
 **Note:** TypeScript causes us to fail during development, not at runtime.
 
@@ -145,7 +145,7 @@ We could assign a type to a variable.
 
 This is considered bad programming practice and shouldn't be used.
 
-It could be used to assign a type to a variable that doesn't have avalue.
+It could be used to assign a type to a variable that doesn't have a value.
 
 ```
     let number1: number;
@@ -186,7 +186,7 @@ This can be confusing. It isn't a JavaScript object as you can see by the semico
 
 It is an object type inferred by TypeScript. What we are seeing isn't key-value pairs but key-type pairs as inferred by TypeScript.
 
-We can change our code to an object type but when we hover over our ``person`` object in the console statement it inly shows us that it is an object but doesn't show us our properties. This is a generic object and we really want the full details of the object showing.
+We can change our code to an object type but when we hover over our ``person`` object in the console statement it only shows us that it is an object but doesn't show us our properties. This is a generic object and we really want the full details of the object showing.
 
 ```
     const person: object = {
@@ -197,7 +197,7 @@ We can change our code to an object type but when we hover over our ``person`` o
     console.log(person);
 ```
 
-If I put a dot (``.``) after the ``person`` I don't get any intelisense an if I try to add the ``.firstName`` property after ``person`` I will get an error.
+If I put a dot (``.``) after the ``person`` I don't get any intellisense an if I try to add the ``.firstName`` property after ``person`` I will get an error.
 
 We can change this to key-value pairs to describe the type of object.
 
@@ -221,7 +221,37 @@ Once again this is not a good practice.
 
 ## Nested objects & types
 
-![Nested objects](assets/images/nested-objects.jpg "Nested objects")
+Of course object types can also be created for nested objects.
+
+Let's say you have this JavaScript object:
+
+```
+    const product = {
+      id: 'abc1',
+      price: 12.99,
+      tags: ['great-offer', 'hot-and-new'],
+      details: {
+        title: 'Red Carpet',
+        description: 'A great carpet - almost brand-new!'
+      }
+    }
+```
+
+This would be the type of such an object:
+
+```
+let product: {
+    id: string,
+    price: number,
+    tags: string[],
+    details: {
+      title: string,
+      description: string
+    }
+}
+```
+
+So you have an object type nested inside of an object type.
 
 ## Array types
 
@@ -463,7 +493,7 @@ When you use an ``any`` type you can use any value you want. This defeats the pu
 
 ## The Union type
 
-The union type allow us to add one or more types to a variable or array.
+The union type allows us to add one or more types to a variable or array.
 
 In a variable we can set the type where multiple types could be required. In the following example we are saying that the ``uid`` variable can be either a string or number.
 
@@ -484,7 +514,7 @@ In a variable we can set the type where multiple types could be required. In the
 > uid's type is number.     
 > The value is 123.
 
-**Note:** This gives us some flexibilty with types but we have to be careful when using the variable to make sure we cast it to the correct type.
+**Note:** This gives us some flexibility with types but we have to be careful when using the variable to make sure we cast it to the correct type.
 
 Another example of union types is to create an array of mixed types.
 
@@ -516,7 +546,7 @@ In our final example we have a simple function to add a couple of people's ages.
     console.log(combinedAges);
 ```
 
-This isn't exactly what we want and in this case we want to use strings and numbers as input and we actually want to have the option to contactenate two values as well as sum two values.
+This isn't exactly what we want and in this case we want to use strings and numbers as input and we actually want to have the option to contcatenate two values as well as sum two values.
 
 This is where we could use the ``union`` type.
 
@@ -580,9 +610,9 @@ A simple example.
     move(1, 'Nurth'); // error
 ```
 
-Literal types can be used for number or strings and are especially useful for strings.
+Literal types can be used for numbers or strings and are especially useful for strings.
 
-In our ``combine()`` function example above we are expecting a string or number type as our input. We could describe this type by using a third parameter named ``resultConversion`` which we describe as a string so we will set it as type string.
+In our ``combine()`` function example above we are expecting a string or number type as our input. We could describe this type by using a third parameter named ``resultConversion`` which we describe as a string so we will set it as a type string.
 
 ```
     const combine = (input1: number | string, input2: number | string, resultConversion: string) => {
@@ -626,7 +656,7 @@ to a literal type.
     resultConversion: 'as-number' | 'as-text'
 ```
 
-Now, if we enter the folllowing it will be an error.
+Now, if we enter the following it will be an error.
 
 ```
     const combinedStringAges = combine('36', '24', 'as-numb'); // error
@@ -651,7 +681,7 @@ type ConversionDescriptor = 'as-number' | 'as-text';
 const combine = (input1: Combinable, input2: Combinable, resultConversion: ConversionDescriptor) => {
 ```
 
-The end result of using type aliases and custom types is that our parameter variable are much cleaner looking and it saves us some typing.
+The end result of using type aliases and custom types is that our parameter variables are much cleaner looking and it saves us some typing.
 
 When we compile we end up with the following complicated piece of JavaScript that TypeScript saves us having to create.
 
@@ -699,7 +729,7 @@ The completed ``combine()`` function.
 
 ## Type Aliases and Object types
 
-Type aliases can be used to create your own types. You are not limited to using uinion types though - you can also provide an alias to a complex object type.
+Type aliases can be used to create your own types. You are not limited to using union types though - you can also provide an alias to a complex object type.
 
 The following routine is not using type aliases.
 
@@ -830,3 +860,224 @@ In most cases this isn't necessary because TypeScript infers the type value.
 If you hover over the ``printResult()`` function you will get a ``void`` return type.
 
 ![Void return type](assets/images/void-return-type.jpg "Void return type")
+
+## Functions as Types
+
+In JavaScript we can create a new variable that can take a function.
+
+```
+    let combinedValues;
+
+    combinedValues = add;
+
+    console.log(combinedValues(8, 8));
+```
+
+``combinedValues`` becomes equal to the function **add()**
+
+So we can run combinedValues to add two numbers together. this works fine but there can be an issue in TypeScript.
+
+```
+let combinedValues;
+
+combinedValues = add;
+combinedValues = 5;
+
+console.log(combinedValues(8, 8));
+```
+
+In some cases this will cause and error in the ``console.log()`` statement. In other cases this won't even produce an error until you run the program in the browser.
+
+This is something we want to guard against and TypeScript can help us by allowing us to cast the ``combinedValues`` variable as a function
+
+```
+    let combinedValues: Function;
+
+    combinedValues = add;
+    combinedValues = 5;
+
+    console.log(combinedValues(8, 8));
+```
+
+Now, *combinedValues = 5;* will show up as an error and if we compiled we would get a compilation error.
+
+There could still be an issue with our code that we need to be aware of.
+
+```
+let combinedValues: Function;
+
+combinedValues = add;
+combinedValues = printResult;
+
+console.log(combinedValues(8, 8));
+```
+
+> undefined
+
+This code is perfectly legal and will compile because ``printResult()`` is a valid function. The problem is that it doesn't have two arguments so will run in the browser and produce an *undefined* result.
+
+It would be good if TypeScript could warn us. This is where function types come into play.
+
+Function types are types that describe a function's parameters and the return value of that function.
+
+```
+    let combinedValues: (a: number, b: number) => number;
+
+    combinedValues = add;
+    combinedValues = printResult;
+
+    console.log(combinedValues(8, 8));
+```
+
+Now ``combinedValues = printResult;`` will produce an error.
+
+TypeScript is saying here that ``combinedValues()`` has to be a function having two number parameters and a number as a return type. The ``add()`` satisfies this criteria.
+
+## Function Types & Callbacks
+
+Functions with callbacks work the same way as function types.
+
+```
+    const addAndHandle = (n1: number, n2: number, cb: (num: number) => void) => {
+        const result = n1 + n2;
+
+        cb(result);
+    }
+
+    addAndHandle(10, 20, (result) => {
+        console.log(result);
+    });
+```
+
+> 30
+
+In the function we are using a callback function as a parameter that has a single parameter and returns a void.
+
+Once we have created our function we can call it and in the callback function we can log the result.
+
+Another interesting fact is that in our function call if we decide to return a value TypeScript will allow this even though we have specified a return type of ``void``.
+
+This is not an error and you will be able to use the return value.
+
+```
+    const addAndHandle = (n1: number, n2: number, cb: (num: number) => void) => {
+        const result = n1 + n2;
+
+        return cb(result);
+    }
+
+    const returnValue = addAndHandle(10, 20, (result) => {
+        console.log(result);
+        return result;
+    });
+
+    console.log(returnValue);
+```
+
+> 30        
+> 30
+
+#### quiz
+
+Will this code compile?
+
+```
+    function sendRequest(data: string, cb: (response: any) => void) {
+      // ... sending a request with "data"
+      return cb({data: 'Hi there!'});
+    }
+    
+    sendRequest('Send this!', (response) => { 
+      console.log(response);
+      return true;
+    });
+```
+
+> Yes, callback functions can return something, even if the argument on which they're passed does NOT expect a returned value.
+
+## The "unknown" Type
+
+```
+    let userInput: unknown;
+```
+
+It might be unknown because the user doesn't know what type it will be.
+
+The interesting thing is that we can store any type of value and we won't get any errors.
+
+```
+let userInput: unknown;
+
+userInput = 5;
+userInput = 'Alan';
+console.log(userInput);
+```
+
+This is the same as not setting a type or if we used the type of ``any`` but ``unknown`` is different.
+
+```
+let userInput: unknown;
+let userName: string;
+
+userInput = 5;
+userInput = 'Alan';
+
+userName = userInput;
+```
+
+This will cause an error on the final line of code. We can't let ``userName`` = ``userInput`` because it is of type **unknown**.
+
+![Unknown error](assets/images/unknown-error.jpg "Unknown error")
+
+If we changed ``userInput`` type to ``any`` the code would work because ``any`` basically says "do whatever you want!".
+
+With ``unknown`` we first have to check the type before we go ahead and try to assign ``userInput`` to unserName``.
+
+This code will work.
+
+```
+    if (typeof userInput === 'string') {
+        userName = userInput;
+        console.log(userName);
+    }
+```
+
+The interesting thing is that the following won't work.
+
+```
+    if (typeof userInput === 'string') {
+        userName = userInput;
+    }
+
+    console.log(userName); // error
+```
+
+the ``console.log()`` statement in this case will fail.
+
+## The "never" Type
+
+Can be used in functions instead of ``void``.
+
+```
+    const generateError = (message: string, code: number) => {
+        throw { message: message, code: code };
+    }
+
+    generateError('An error occurred!', 500);
+```
+
+> Uncaught {message: "An error occurred!", code: 500}
+
+This may look abstract but it could be used in large applications where you don't want to manually throw an error but you could pass in a message and code to produce an error message.
+
+If you hover over the function name you will find that it returns the ``never`` type. This function never produces a return value. The ``throw`` call technically causes our script to crash and even if we tried to return a value it wouldn't happen.
+
+You can be clear and explicitly set ``never`` as a return type.
+
+```
+    const generateError = (message: string, code: number): never => {
+        throw { message: message, code: code };
+    }
+
+    generateError('An error occurred!', 500);
+```
