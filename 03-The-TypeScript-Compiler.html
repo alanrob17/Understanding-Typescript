@@ -1,0 +1,304 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta http-equiv="X-UA-Compatible" content="ie=edge">
+<title>Understanding TypeScript</title>
+<link href="assets/css/bootstrap.css" rel="stylesheet">
+<!-- Custom styles for this template -->
+<link href="assets/css/starter-template.css" rel="stylesheet">
+<script src="https://cdn.rawgit.com/google/code-prettify/master/loader/run_prettify.js?lang=css&amp;skin=sunburst"></script>
+<style type="text/css">
+html {
+	font-size: 90.0%;
+}
+
+h2 {
+	margin-top: 60px;
+}
+
+h4, h3 {
+	padding-top: 40px!;		
+}
+
+p {
+	font-size: 1.2em;
+}
+h4 {
+	font-size: 1.4em;
+}
+
+img, pre.prettyprint {
+	margin-top: 1.5em;
+	margin-bottom: 1.5em;
+}
+h1, h2, h3, h4, h5, h6 {
+    color:#007bff;
+
+}
+blockquote {
+    border-left: 4px solid #999;
+    padding-left: 1rem;
+    page-break-inside: avoid;
+}
+</style>
+</head>
+<body>
+<header>
+    <nav class="navbar navbar-expand-md navbar-dark fixed-top bg-primary">
+        <div class="container">
+            <a class="navbar-brand" href="#">Understanding TypeScript - 2021</a>
+            <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarCollapse"
+                aria-controls="navbarCollapse" aria-expanded="false" aria-label="Toggle navigation">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+            <div class="collapse navbar-collapse" id="navbarCollapse">
+                <ul class="navbar-nav mr-auto">
+                    <li class="nav-item">
+                        <a class="nav-link" href="#">Home</a>
+                    </li>
+                    <li class="nav-item active">
+                        <a class="nav-link" href="#">03 - The TypeScript Compiler <span class="sr-only">(current)</span></a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="#">About</a>
+                    </li>
+                </ul>
+            </div>
+        </div>
+    </nav>
+</header>
+<div class="container">
+    <div class="starter-template">
+
+<h1 id="the-typescript-compiler">The TypeScript Compiler</h1>
+<p>The simple way to compile.</p>
+<pre class="prettyprint">    npx tsc app.ts
+</pre>
+<p>The problem with this is that every time we make a changset to our .ts file we have to run the command again.</p>
+<h2 id="watch-mode">Watch mode</h2>
+<p>We can use the <code>watch</code> option to re-compile every time we make a change to our code.</p>
+<pre class="prettyprint">    npx tsc app.ts --watch
+</pre>
+<p>or</p>
+<pre class="prettyprint">    npx tsc app.ts -w
+</pre>
+<p><strong>Note:</strong> I am running <code>npx</code> at the start of my commands because my global compiler only uses TypeScript version 1.0.3. By using <code>npx</code> I can run the locally installed version of TypeScript which is version 4.1.3.</p>
+<h2 id="compiling-the-entire-project">Compiling the entire project</h2>
+<p>What if we have a number of TypeScript files in our project?</p>
+<p>We can initialise a configuration file for our project with.</p>
+<pre class="prettyprint">    npx tsc --init
+</pre>
+<p>This will create a <code>tsconfig.json</code> file with our TypeScript configuration options. You only have to run this command once per project.</p>
+<p>This will allow us to control and compile all .ts files and we can do this with.</p>
+<pre class="prettyprint">    npx tsc -w
+</pre>
+<h2 id="including-and-excluding-files">Including and Excluding files</h2>
+<p>We can include and exclude .ts files and folders and we do this after the <em>compilerOptions</em> section in <code>tsconfig.json</code>.</p>
+<pre class="prettyprint">        },
+          &quot;include&quot;: [&quot;src&quot;]
+    }
+</pre>
+<p>have set my <strong>src</strong> folder as the folder that contains my .ts files so only files in this folder will be compiled.</p>
+<p>We could exclude the <code>node_modules</code> and <code>dist</code> folders.</p>
+<pre class="prettyprint">       },
+         &quot;exclude&quot;: [
+             &quot;node_modules&quot;, &quot;dist&quot;
+       ],
+         &quot;include&quot;: [
+             &quot;src&quot;
+       ]
+   }
+</pre>
+<p><strong>Note:</strong> this is only to show how to exclude folders. The <code>node_modules</code> folder is automatically ignored anyway. Our include option would also force us to ignore <code>node_modules</code> anyway.</p>
+<p><strong>Note:</strong> do the excludes first and then the includes as the thes options filter down.</p>
+<p>You can work with wildcards for files.</p>
+<pre class="prettyprint">  &quot;exclude&quot;: [
+      &quot;node_modules&quot;, &quot;dist&quot;, &quot;*.dev.ts&quot;
+  ]
+</pre>
+<p>This ignores files with a <code>.dev.ts</code> extension.</p>
+<pre class="prettyprint">  &quot;exclude&quot;: [
+      &quot;node_modules&quot;, &quot;dist&quot;, &quot;**/*.dev.ts&quot;
+  ]
+</pre>
+<p>This ignores all <code>.dev.ts</code> files in <strong>all</strong> folders.</p>
+<p>You can ignore folders and just include/exclude files if you want with.</p>
+<pre class="prettyprint">  &quot;files&quot;: [
+      &quot;app.ts&quot;, &quot;analytics.ts&quot;
+  ]
+</pre>
+<p>This will now only compile the two files listed above. This would probably only be useful for small projects.</p>
+<h2 id="setting-a-compilation-target">Setting a Compilation Target</h2>
+<p>This area in <code>tsconfig.json</code> allows us to control how our files are compiled.</p>
+<p>The most important compiler option would be.</p>
+<pre class="prettyprint">    &quot;target&quot;: &quot;es6&quot;,
+</pre>
+<p>Initially this is set to <code>es5</code> and this won't allow new JavaScript options like <code>const</code> and <code>let</code>. It will change <code>const</code> and <code>let</code> in TypeScript down to <code>var</code>.</p>
+<p>I have set my target to <code>es6</code>. I am not interested in older browsers that can't handle these keyword types.</p>
+<h2 id="understanding-typescript-core-libraries">Understanding TypeScript Core Libraries</h2>
+<p><strong>lib</strong> can be used to bring in JavaScript libraries. For example when I use the following code.</p>
+<pre class="prettyprint">    const button = document.querySelector(&quot;button&quot;);
+
+    button.addEventListener(&quot;click&quot;, function () {
+        console.log(add(+input1.value, +input2.value));
+    });
+</pre>
+<p>The <code>button.addEventListener()</code> statement will show an error in TypeScript.</p>
+<p>TypesScript isn't sure if there is a button on the HTML page. For now we can work around that by adding an exclamation mark after the <code>button</code> variable.</p>
+<pre class="prettyprint">    const button = document.querySelector(&quot;button&quot;)!;
+
+    button.addEventListener(&quot;click&quot;, function () {
+        console.log(add(+input1.value, +input2.value));
+    });
+</pre>
+<p>This assures TypeScript that we do have a button on the HTML page. How does TypeScript know how to let us have access to the button? It does this because of the <code>lib</code> option that is commented out in our <code>tsconfig.json</code> file at the moment.</p>
+<p>TypeScript assumes some defaults for this setting so you don't have to set them. This is set based on your <code>target</code> setting. We are using <strong>es6</strong> and this allows for the <code>Map()</code> object and allows all of the <strong>es6</strong> features that are available in JavaScript including all DOM API's.</p>
+<p>We could set the <code>lib</code> settings manually.</p>
+<pre class="prettyprint">  &quot;lib&quot;: [
+      &quot;dom&quot;, 
+      &quot;es6&quot;,
+      &quot;dom.iterable&quot;,
+      &quot;scripthost&quot;
+  ]
+</pre>
+<p>Actually we don't need to do this because they are the same as the defaults that you get when you set the target for <strong>es6</strong>.</p>
+<h2 id="more-configuration--compilation-options">More Configuration &amp; Compilation Options</h2>
+<pre class="prettyprint">    &quot;allowJs&quot;: true,
+    &quot;checkJs&quot;: true,
+</pre>
+<p>These options instruct the TypeScript compiler to include JavaScript files into its processing and then check for compilation errors.</p>
+<p>We wouldn't normally use these options. They would be handy if you weren't using TypeScript and wanted to check your JavaScript for errors.</p>
+<h2 id="working-with-source-maps">Working with Source Maps</h2>
+<p>Source mapping helps us with debugging and development.</p>
+<pre class="prettyprint">    &quot;sourceMap&quot;: true,
+</pre>
+<p>Sets the source map on. If you look in your <strong>src</strong> folder you will see and <code>app.js.map</code> map file. This acts as a bridge between your JavaScript and your browser.</p>
+<h2 id="rootdir-and-outdir">rootDir and outDir</h2>
+<p>These configuration settings come in handy when you are running larger projects and allow you to separate files into <strong>src</strong> and <strong>dist</strong> folders.</p>
+<p>In our case our TypeScript files will go into the <strong>src</strong> folder and our HTML and CSS files will go into the <strong>dist</strong> folder. Our JavaScript files will go into the <strong>dist/js</strong> folder.</p>
+<pre class="prettyprint">    &quot;outDir&quot;: &quot;./dist/js&quot;,
+    &quot;rootDir&quot;: &quot;./src&quot;,
+</pre>
+<p><code>rootDir</code> is where our .ts files are kept and should be compiled.</p>
+<p>This combines with our <code>include</code> option which states that we will only compile .ts files in the <strong>src</strong> folder. All other .ts files in other areas of our project will not be compiled so won't be part of our project.</p>
+<pre class="prettyprint">    &quot;include&quot;: [
+        &quot;src&quot;
+      ]
+</pre>
+<p>Now we have to adjust our HTML file.</p>
+<pre class="prettyprint">    &lt;script src=&quot;js/app.js&quot; defer&gt;&lt;/script&gt;
+</pre>
+<h3 id="removecomments">removeComments</h3>
+<p>The <code>&quot;removeComments&quot;: true,</code> option would be handy as it would remove all comments from your compiled .js files.</p>
+<h4 id="appts">app.ts</h4>
+<pre class="prettyprint">    // submit button.
+    const button = document.querySelector(&quot;button&quot;)!;
+</pre>
+<h4 id="appjs">app.js</h4>
+<pre class="prettyprint">    &quot;use strict&quot;;
+    const button = document.querySelector(&quot;button&quot;);
+</pre>
+<p>The comment has been removed in the JavaScript code.</p>
+<h2 id="noemit">noEmit</h2>
+<p>If <code>&quot;noEmit&quot;: true,</code> is set to <code>true</code> then no JavaScript will be created. This may seem strange but it is handy if you are just writing TypeScript and don't want to generate JavaScript files.</p>
+<h2 id="stop-emitting-files-on-compilation-errors">Stop Emitting Files on Compilation Errors</h2>
+<p><code>&quot;noEmitOnError&quot;: true,</code> is a useful option that stops creating JavaScript if your TypeScript produces an error.</p>
+<p>If we remove the exclamation mark from the following line of code it will create an error.</p>
+<pre class="prettyprint">    const button = document.querySelector(&quot;button&quot;);
+</pre>
+<blockquote>
+<p>src/app.ts:10:1 - error TS2531: Object is possibly 'null'.</p>
+<p>10 button.addEventListener(&quot;click&quot;, function () {</p>
+</blockquote>
+<p>Now if you look in the <code>js</code> folder you will see that no JavaScript files were created. This will stop you accidently sending out faulty JavaScript code.</p>
+<h2 id="strict-compilation">Strict compilation</h2>
+<p><code>&quot;strict&quot;: true,</code> enables all strict options. It is the same as setting all these options.</p>
+<blockquote>
+<p>&quot;noImplicitAny&quot;: true,<br>
+&quot;strictNullChecks&quot;: true,<br>
+&quot;strictFunctionTypes&quot;: true,<br>
+&quot;strictBindCallApply&quot;: true,<br>
+&quot;strictPropertyInitialization&quot;: true,<br>
+&quot;noImplicitThis&quot;: true,<br>
+&quot;alwaysStrict&quot;: true,</p>
+</blockquote>
+<h2 id="code-quality">Code Quality</h2>
+<p>We can improve code quality by adding these settings</p>
+<pre class="prettyprint">    &quot;noUnusedLocals&quot;: true,
+    &quot;noUnusedParameters&quot;: true,
+    &quot;noImplicitReturns&quot;: true,
+</pre>
+<p><code>noUnusedLocals</code> will produce a warning for unused local variables.</p>
+<pre class="prettyprint">    button.addEventListener(&quot;click&quot;, function () {
+      let firstName = 'Alan';
+    
+      console.log(add(+input1.value, +input2.value));
+    
+    });
+</pre>
+<p>This will show a yellow underline under the <code>firstName</code> variable because it isn't being used. If you save it will show an error in TypeScript and not produce JavaScript code. TypeScript will produce an error for warnings as it doesn't know how to handle warnings.</p>
+<p>Now if we create an unused global variable TypeScript won't produce a warning because the global variable could be used in another script.</p>
+<pre class="prettyprint">    let abc = '123';
+
+    const button = document.querySelector(&quot;button&quot;)!;
+</pre>
+<p>The code above will be allowed to run even though the variable <code>abc</code> isn't being used in this script.</p>
+<p><code>noImplicitReturns</code> will produce a warning if a function doesn't return a value when it is expected to return a value. In the following code we have add a check to see if <em>num1</em> + <em>num2</em> is greater than 0, if it isn't don't return anything.</p>
+<pre class="prettyprint">    function add(num1: number, num2: number) {
+      if (num1 + num2 &gt; 0) {
+        return num1 + num2;
+      }
+    }
+</pre>
+<p>This code won't compile because there is a chance that a return value won't be sent back.</p>
+<p>We could fix this code by.</p>
+<pre class="prettyprint">    function add(num1: number, num2: number) {
+      if (num1 + num2 &gt; 0) {
+        return num1 + num2;
+      }
+
+      return;
+    }
+</pre>
+<h2 id="debugging-with-visual-studio-code">Debugging with Visual Studio Code</h2>
+<p>You should have the ESLint extension working in your editor.</p>
+<p>The Debugger for Chrome extension should also be used. This will allow you to debug with Visual Studio Code and Chrome.</p>
+<p>You can start debugging by allowing <code>&quot;sourceMap&quot;: true</code> this will create .ts files in Chrome.</p>
+<p>Now Click <code>F5</code> in VS Code. The first time you run this it will ask you to select your environment and here you will select <strong>Chrome</strong>.</p>
+<p>It will now go to a <code>launch.json</code> file in your .vscode folder. The configurations you will use are.</p>
+<pre class="prettyprint">    &quot;configurations&quot;: [
+            {
+                &quot;type&quot;: &quot;chrome&quot;,
+                &quot;request&quot;: &quot;launch&quot;,
+                &quot;name&quot;: &quot;Launch Chrome against localhost&quot;,
+                &quot;url&quot;: &quot;http://127.0.0.1:5501/dist/index.html&quot;,
+                &quot;webRoot&quot;: &quot;${workspaceFolder}&quot;
+            }
+        ]
+</pre>
+<p>We use the port of 5501 because that is what we are using with Live Server.</p>
+<p>Set a breakpoint in your .ts code.</p>
+<p>Hit the <strong>F5</strong> key and it will open up a new instance of Chrome. You should now be be ready to debug your code inside of VS Code.</p>
+<p>Open up the debug tools menu option and you should be able to set watch variables.</p>
+<p>In your console the debug console tab will be open and you can see the <code>console.log()</code> values you have logged.</p>
+<p>Use <strong>F10</strong> to move though your .ts code.</p>
+<h4 id="example-debug-code-window">Example debug code window</h4>
+<p><img src="assets/images/debugger.jpg" alt="Debugger window"></p>
+
+</div><!-- starter-template -->
+</div><!-- /.container -->
+
+
+<!-- Bootstrap core JavaScript
+================================================== -->
+<!-- Placed at the end of the document so the pages load faster -->
+<script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/9.12.0/styles/default.min.css"/>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/9.12.0/highlight.min.js"/>
+<script>hljs.initHighlightingOnLoad();</script>
+
+<script src="assets/js/jquery.min.js"></script>
+<script src="assets/js/bootstrap.min.js"></script>
+</body>
+</html>
