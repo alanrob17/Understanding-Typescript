@@ -1,0 +1,289 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta http-equiv="X-UA-Compatible" content="ie=edge">
+<title>Understanding TypeScript</title>
+<link href="assets/css/bootstrap.css" rel="stylesheet">
+<!-- Custom styles for this template -->
+<link href="assets/css/starter-template.css" rel="stylesheet">
+<script src="https://cdn.rawgit.com/google/code-prettify/master/loader/run_prettify.js?lang=css&amp;skin=sunburst"></script>
+<style type="text/css">
+html {
+	font-size: 90.0%;
+}
+
+h2 {
+	margin-top: 60px;
+}
+
+h4, h3 {
+	padding-top: 40px!;		
+}
+
+p {
+	font-size: 1.2em;
+}
+h4 {
+	font-size: 1.4em;
+}
+
+img, pre.prettyprint {
+	margin-top: 1.5em;
+	margin-bottom: 1.5em;
+}
+h1, h2, h3, h4, h5, h6 {
+    color:#007bff;
+
+}
+blockquote {
+    border-left: 4px solid #999;
+    padding-left: 1rem;
+    page-break-inside: avoid;
+}
+</style>
+</head>
+<body>
+<header>
+    <nav class="navbar navbar-expand-md navbar-dark fixed-top bg-primary">
+        <div class="container">
+            <a class="navbar-brand" href="#">Understanding TypeScript - 2021</a>
+            <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarCollapse"
+                aria-controls="navbarCollapse" aria-expanded="false" aria-label="Toggle navigation">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+            <div class="collapse navbar-collapse" id="navbarCollapse">
+                <ul class="navbar-nav mr-auto">
+                    <li class="nav-item">
+                        <a class="nav-link" href="#">Home</a>
+                    </li>
+                    <li class="nav-item active">
+                        <a class="nav-link" href="#">04 - Next generation JavaScript and TypeScript <span class="sr-only">(current)</span></a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="#">About</a>
+                    </li>
+                </ul>
+            </div>
+        </div>
+    </nav>
+</header>
+<div class="container">
+    <div class="starter-template">
+
+<h1 id="next-generation-javascript-and-typescript">Next generation JavaScript and TypeScript</h1>
+<h2 id="arrow-functions">Arrow functions</h2>
+<pre class="prettyprint">    const add = (a: number, b: number) =&gt; {
+        return a + b;
+    };
+
+    console.log(add(7, 6));
+</pre>
+<blockquote>
+<p>13</p>
+</blockquote>
+<p>The arrow function syntax has some nice variations. We could shorten the function even more because there is only one statement in the function body.</p>
+<pre class="prettyprint">    const add = (a: number, b: number) =&gt; a + b;
+
+    console.log(add(7, 6));
+</pre>
+<blockquote>
+<p>13</p>
+</blockquote>
+<p>Look at this code.</p>
+<pre class="prettyprint">    const add = (a: number, b: number) =&gt; a + b;
+
+    const printOutput = (output: (string | number)) =&gt; console.log(output);
+
+    printOutput(add(7, 6));
+</pre>
+<p>Because there is only one parameter in the <code>printOutput()</code> function we can shorten the function itself.</p>
+<pre class="prettyprint">    const add = (a: number, b: number) =&gt; a + b;
+
+    const printOutput: (a: string | number) =&gt; void = output =&gt; console.log(output);
+
+    printOutput(add(7, 6));
+</pre>
+<blockquote>
+<p>13</p>
+</blockquote>
+<p>The issue here is that we are substituting shortness for readability. There is another use for using this shortened syntax.</p>
+<pre class="prettyprint">    const button = document.querySelector('button');
+
+    if (button) {
+        button.addEventListener('click', event =&gt; { console.log(event) });
+    }
+
+    &gt; MouseEvent {isTrusted: true, screenX: 907, screenY: 242, clientX: 900, clientY: 162, …}
+</pre>
+<p><strong>Note:</strong> in an arrow function if you have NO parameters you HAVE TO use an empty pair of parentheses, <code>() =&gt; {....}</code>.</p>
+<h3 id="default-function-parameters">Default function parameters</h3>
+<p>In the <code>add()</code> function we know we need two numbers but we can provide a default parameter in case only one number is sent.</p>
+<pre class="prettyprint">    const add = (a: number, b: number = 1) =&gt; a + b;
+
+    const printOutput: (a: string | number) =&gt; void = output =&gt; console.log(output);
+
+    printOutput(add(7));
+</pre>
+<blockquote>
+<p>8</p>
+</blockquote>
+<p><strong>Note:</strong> if a default number is used it should be the <strong>last</strong> parameter in the list.</p>
+<h2 id="the-spread-operator">The spread operator</h2>
+<p><code>spread</code> is a new vanilla JavaScript operator.</p>
+<pre class="prettyprint">    const hobbies = ['programming', 'reading', 'rowing'];
+    const activeHobbies = ['hiking'];
+
+    activeHobbies.push(...hobbies);
+
+    console.log(activeHobbies);
+</pre>
+<blockquote>
+<p>(4) [&quot;hiking&quot;, &quot;programming&quot;, &quot;reading&quot;, &quot;rowing&quot;]</p>
+</blockquote>
+<p>It is saying push all of the elements from one array (hobbies) onto the current array (activeHobbies).</p>
+<p>Another way to do this is.</p>
+<pre class="prettyprint">    const hobbies = ['programming', 'reading', 'rowing'];
+    const activeHobbies = ['hiking', ...hobbies];
+
+    console.log(activeHobbies);
+</pre>
+<blockquote>
+<p>(4) [&quot;hiking&quot;, &quot;programming&quot;, &quot;reading&quot;, &quot;rowing&quot;]</p>
+</blockquote>
+<p>Produces the same result.</p>
+<p>The <code>spread</code> operator also works with objects.</p>
+<pre class="prettyprint">    const person = {
+        name: 'Alan',
+        age: 68
+    }
+
+    const anotherPerson = person;
+</pre>
+<p>This isn't creating another person it is actually creating a pointer to the <code>person</code> object in memory.</p>
+<p>If we want to create a new person we can use the <code>spread</code> operator.</p>
+<pre class="prettyprint">    const person = {
+        name: 'Alan',
+        age: 68
+    }
+
+    let anotherPerson = { ...person };
+
+    anotherPerson.name = 'James';
+    anotherPerson.age = 14;
+
+    console.log(person);
+    console.log(anotherPerson);
+</pre>
+<blockquote>
+<p>{name: &quot;Alan&quot;, age: 68}<br>
+{name: &quot;James&quot;, age: 14}</p>
+</blockquote>
+<p>I have changed the values in <code>anotherPerson</code> to prove that both objects are different.</p>
+<h2 id="rest-parameters">Rest parameters</h2>
+<p><code>rest</code> parameters allow you to take a list of values and use them as parameters</p>
+<pre class="prettyprint">    const add = (...numbers: number[]) =&gt; {
+        let result = 0;
+        numbers.forEach((number) =&gt; {
+            result += number;
+        });
+
+        return result;
+    };
+
+    const addNumbers = add(5, 7, 5.6, 3.4, 6);
+
+    console.log(addNumbers);
+</pre>
+<blockquote>
+<p>27</p>
+</blockquote>
+<p>Another way to do this is to use the <code>reduce()</code> function to merge a list of values.</p>
+<pre class="prettyprint">    const add = (...numbers: number[]) =&gt; {
+        return numbers.reduce((curResult, curValue) =&gt; {
+            return curResult + curValue;
+        }, 0);
+    };
+
+    const addNumbers = add(5, 7, 5.6, 3.4, 6);
+
+    console.log(addNumbers);
+</pre>
+<blockquote>
+<p>27</p>
+</blockquote>
+<p>This is a really handy routine to add a list of numbers.</p>
+<h2 id="array-and-object-destructuring">Array and Object destructuring</h2>
+<p>We want to be able to destructure an array and the longhanded way to do this is to create a new set of variables to hold the values in the array.</p>
+<pre class="prettyprint">    const hobbies = ['programming', 'reading', 'rowing'];
+
+    const hobbies1 = hobbies[0];
+    const hobbies2 = hobbies[1];
+    const hobbies3 = hobbies[2];
+</pre>
+<p>A better way is to use destructuring.</p>
+<pre class="prettyprint">    const hobbies = ['programming', 'reading', 'rowing'];
+
+    const [hobby1, hobby2, hobby3] = hobbies;
+</pre>
+<p>This assumes that you have to put enough variables in the destructured array to cover all of the items in the original array (hobbies).</p>
+<p>You can destructure the remaining elements in the original array with.</p>
+<pre class="prettyprint">    const [hobby1, ...remainingHobbies] = hobbies;
+
+    console.log(hobby1);
+    console.log(remainingHobbies);
+</pre>
+<blockquote>
+<p>programming<br>
+(2) [&quot;reading&quot;, &quot;rowing&quot;]</p>
+</blockquote>
+<p><code>remainingHobbies</code> is a new array and the original array (hobbies) hasn't been changed.</p>
+<p>You can also destructure objects.</p>
+<pre class="prettyprint">    const person = {
+        firstName: 'Alan',
+        age: 68
+    }
+
+    const { firstName, age } = person;
+
+    console.log(firstName);
+    console.log(age);
+</pre>
+<blockquote>
+<p>Alan<br>
+68</p>
+</blockquote>
+<p>Note that the names you use when you destructure an object have to be the same as the property names in your object.</p>
+<p>You can override this by using the following code.</p>
+<pre class="prettyprint">    const person = {
+        firstName: 'Alan',
+        age: 68
+    }
+
+    const { firstName: userName, age } = person;
+
+    console.log(userName);
+    console.log(age);
+</pre>
+<p>The colon in this case isn't for a type value it is just JavaScript syntax used to rename a variable.</p>
+<h2 id="how-code-gets-compiled">How code gets compiled</h2>
+<p>It is important to keep in mind that TypeScript will compile JavaScript based on the settings in your <code>tsconfig.json</code> file.</p>
+<p>A lot of the code we covered in this section will compile down to JavaScript similar to what we used in our TypeScript because we are compiling to <strong>es6</strong> and that contains the newer features we were working with.</p>
+<p>If you change the target to <strong>es5</strong> the compiled JavaScript will be much larger because TypeScript has to build workarounds for the newer TypeScript code we were using.</p>
+
+</div><!-- starter-template -->
+</div><!-- /.container -->
+
+
+<!-- Bootstrap core JavaScript
+================================================== -->
+<!-- Placed at the end of the document so the pages load faster -->
+<script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/9.12.0/styles/default.min.css"/>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/9.12.0/highlight.min.js"/>
+<script>hljs.initHighlightingOnLoad();</script>
+
+<script src="assets/js/jquery.min.js"></script>
+<script src="assets/js/bootstrap.min.js"></script>
+</body>
+</html>
