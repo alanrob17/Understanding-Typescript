@@ -1,0 +1,915 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta http-equiv="X-UA-Compatible" content="ie=edge">
+<title>Understanding TypeScript</title>
+<link href="assets/css/bootstrap.css" rel="stylesheet">
+<!-- Custom styles for this template -->
+<link href="assets/css/starter-template.css" rel="stylesheet">
+<script src="https://cdn.rawgit.com/google/code-prettify/master/loader/run_prettify.js?lang=css&amp;skin=sunburst"></script>
+<style type="text/css">
+html {
+	font-size: 90.0%;
+}
+
+h2 {
+	margin-top: 60px;
+}
+
+h4, h3 {
+	padding-top: 40px!;		
+}
+
+p {
+	font-size: 1.2em;
+}
+h4 {
+	font-size: 1.4em;
+}
+
+img, pre.prettyprint {
+	margin-top: 1.5em;
+	margin-bottom: 1.5em;
+}
+h1, h2, h3, h4, h5, h6 {
+    color:#007bff;
+
+}
+blockquote {
+    border-left: 4px solid #999;
+    padding-left: 1rem;
+    page-break-inside: avoid;
+}
+</style>
+</head>
+<body>
+<header>
+    <nav class="navbar navbar-expand-md navbar-dark fixed-top bg-primary">
+        <div class="container">
+            <a class="navbar-brand" href="#">Understanding TypeScript - 2021</a>
+            <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarCollapse"
+                aria-controls="navbarCollapse" aria-expanded="false" aria-label="Toggle navigation">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+            <div class="collapse navbar-collapse" id="navbarCollapse">
+                <ul class="navbar-nav mr-auto">
+                    <li class="nav-item">
+                        <a class="nav-link" href="#">Home</a>
+                    </li>
+                    <li class="nav-item active">
+                        <a class="nav-link" href="#">04 - Classes and Interfaces <span class="sr-only">(current)</span></a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="#">About</a>
+                    </li>
+                </ul>
+            </div>
+        </div>
+    </nav>
+</header>
+<div class="container">
+    <div class="starter-template">
+
+<h1 id="classes-and-interfaces">Classes and Interfaces</h1>
+<p>Classes are the descriptions of real life entities that we work with every day.</p>
+<p><img src="assets/images/object-orientated-programming.jpg" alt="Object orientated programming" title="Object orientated programming"></p>
+<p>We can create objects from the class blueprint.</p>
+<p><img src="assets/images/classes-and-instances.jpg" alt="Classes and instances" title="Classes and instances"></p>
+<p>Each instance of an object can contain different data but they have the same properties and methods.</p>
+<h2 id="creating-a-first-class">Creating a first class</h2>
+<pre class="prettyprint">    class Department {
+        name: string;
+
+        constructor(n: string) {
+            this.name = n;
+        }
+    }
+
+    const accounting = new Department('Accounting');
+
+    console.log(accounting);
+</pre>
+<blockquote>
+<p>Department {name: &quot;Accounting&quot;}</p>
+</blockquote>
+<p>A constructor is a special method that gets called when an object is initialised. It supplies an initial value to each of the properties in the object.</p>
+<p>If we look at the compiled JavaScript it is basically the same as what we created in TypeScript.</p>
+<h4 id="es6-javascript">es6 JavaScript</h4>
+<pre class="prettyprint">    &quot;use strict&quot;;
+    class Department {
+        constructor(n) {
+            this.name = n;
+        }
+    }
+    const accounting = new Department('Accounting');
+    console.log(accounting);
+    //# sourceMappingURL=app.js.map
+</pre>
+<p>Now we will change the <em>tsconfig.json</em> target to and earlier version of JavaScript, <strong>es5</strong>. And it is totally different. <strong>es5</strong> doesn't have classes so it creates a constructor function as a workaround.</p>
+<h4 id="es5-javascript">es5 JavaScript</h4>
+<pre class="prettyprint">&quot;use strict&quot;;
+var Department = (function () {
+    function Department(n) {
+        this.name = n;
+    }
+    return Department;
+}());
+var accounting = new Department('Accounting');
+console.log(accounting);
+//# sourceMappingURL=app.js.map
+</pre>
+<p><strong>es6</strong> developed the idea of classes to create a cleaner version of the object code.</p>
+<p>The key point here is that we can create objects with either sets of code. If we down compile to <strong>es5</strong> we can be assured of older browser support.</p>
+<h2 id="constructor-functions--the-%22this%22-keyword">Constructor functions &amp; The &quot;this&quot; keyword</h2>
+<p>We can also add methods to our class definition. In the code below we describe the department.</p>
+<p>This code contains an error. <code>name</code> is a global browser variable and is different to the name property we are using in the <strong>Department</strong> class.</p>
+<p>We can get around this problem by using the <code>this</code> keyword.</p>
+<pre class="prettyprint">    describe() {
+        console.log(`Department: ${this.name}`);
+    }
+</pre>
+<p>We use the <code>this</code> keyword on internal properties and methods to call this items within the class. Now we can describe our object instance.</p>
+<pre class="prettyprint">    class Department {
+        name: string;
+
+        constructor(n: string) {
+            this.name = n;
+        }
+
+        describe() {
+            console.log(`Department: ${this.name}`);
+        }
+    }
+
+    const accounting = new Department('Accounting');
+
+    console.log(accounting.describe());
+</pre>
+<blockquote>
+<p>Department: Accounting</p>
+</blockquote>
+<p>Anyone who has worked with JavaScript's <code>this</code> keyword would know that it can be tricky. For example I can add another accounting object.</p>
+<pre class="prettyprint">    const accountingCopy = { describe: accounting.describe };
+    accountingCopy.describe();
+</pre>
+<p>If I compile here I don't get an error but I get the following output.</p>
+<blockquote>
+<p>Department: undefined</p>
+</blockquote>
+<p>What we are doing is creating a new object based on a dummy literal <code>accounting.describe</code> and the describe property on this new object <code>describe:</code> is a pointer to the accounting.describe method in the accounting object. So we are pointing at the <code>describe()</code> method on a concrete object and we are not passing the value of the method to <code>describe:</code>. We are actually passing the method to describe. When we call <code>accountingCopy.describe();</code> it executes the method. The problem is that <code>this.name</code> will not point to the object, accounting. In this case <code>this</code> is responsible for calling <code>accountingCopy</code> so it returns <strong>undefined</strong>.</p>
+<p>We call <code>describe</code> on <code>accountingCopy</code> so it doesn't work properly. This happens in TypeScript as well as JavaScript.</p>
+<p>There is a workaround to this problem. You can add a parameter to <code>describe()</code>. <code>this</code> is a special parameter understood by TypeScript. It is basically a hint to what the method points to. It needs a type so you add the class name.</p>
+<pre class="prettyprint">    describe(this: Department) {
+        console.log(`Department: ${this.name}`);
+    }
+</pre>
+<p>Now <code>accountingCopy.describe();</code> will fail because it is pointing to the wrong object.</p>
+<p><strong>Note:</strong> the <code>describe(this: Department)</code> method doesn't require a parameter. The <code>this</code> placeholder isn't a parameter and is being used by TypeScript.</p>
+<h2 id="private-and-public-access-modifiers">Private and Public access modifiers</h2>
+<p>We have a very simple class and now we will build on that class by adding more properties and methods.</p>
+<pre class="prettyprint">    class Department {
+        name: string;
+        private employees: string[] = [];
+
+        constructor(n: string) {
+            this.name = n;
+        }
+
+        describe(this: Department) {
+            console.log(`Department: ${this.name}`);
+        }
+
+        addEmployee(employee: string) {
+            this.employees.push(employee);
+        }
+
+        changeDepartmentName(newName: string) {
+            this.name = newName;
+        }
+
+        printEmployeeInformation() {
+            console.log(this.employees.length);
+            console.log(this.employees);
+        }
+    }
+
+    const accounting = new Department('Accounting');
+    accounting.addEmployee('Alan');
+    accounting.addEmployee('James');
+    accounting.addEmployee('Charley');
+
+    accounting.describe();
+
+    accounting.printEmployeeInformation();
+    accounting.changeDepartmentName('Accounting101');
+    accounting.describe();
+</pre>
+<blockquote>
+<p>Department: Accounting<br>
+3<br>
+(3) [&quot;Alan&quot;, &quot;James&quot;, &quot;Charley&quot;]</p>
+</blockquote>
+<p>This is working nicely but there is an issue in that we can change employee values from inside the object instance (which we want to do) and from outside of the object instance. This means that anybody can change our object instance and this is not something we want other users to do.</p>
+<p>For example we could add the code.</p>
+<pre class="prettyprint">    accounting.employees[3] = 'Ethan';
+</pre>
+<p>This is legal but we want to stop developers from doing this. We want to make sure there is only one way to do this and that is the <code>accounting.addEmployee()</code> method. TypeScript has a method to stop this.</p>
+<pre class="prettyprint">    private employees: string[] = [];
+</pre>
+<p>You use the <code>private</code> keyword to make the property only accessible from inside the object instance.</p>
+<p>The <code>private</code> keyword is called a modifier.</p>
+<p>Now, <code>accounting.employees[3]</code> brings up an error so we will have to remove it.</p>
+<p><strong>Note:</strong> you can also mark methods as private as well.</p>
+<p>You also have a <code>public</code> modifier and this is the default so it isn't necessary. <code>public</code> modifiers are accessible from outside.</p>
+<p>We could do this.</p>
+<pre class="prettyprint">    accounting.name = 'New Name';
+</pre>
+<p>In our situation we probably don't want to do this so we could make the property <code>private</code> and this would leave us with no way of changing the department name. If we wanted to change the department name we should write a method to do this.</p>
+<p>Note also that <code>public</code> and <code>private</code> are recent additions to JavaScript so in the past all properties were public.</p>
+<p>If we look at the <strong>es6</strong> JavaScript that has been compiled it has no mention of <code>private</code> or <code>public</code>.</p>
+<p>In our case TypeScript uses these modifiers for our code for checking but this feature is not available at runtime.</p>
+<pre class="prettyprint">    class Department {
+        private name: string;
+        private employees: string[] = [];
+
+        constructor(n: string) {
+            this.name = n;
+        }
+
+        describe(this: Department) {
+            console.log(`Department: ${this.name}`);
+        }
+
+        addEmployee(employee: string) {
+            this.employees.push(employee);
+        }
+
+        changeDepartmentName(newName: string) {
+            this.name = newName;
+        }
+
+        printEmployeeInformation() {
+            console.log(this.employees.length);
+            console.log(this.employees);
+        }
+    }
+
+    const accounting = new Department('Accounting');
+    accounting.addEmployee('Alan');
+    accounting.addEmployee('James');
+    accounting.addEmployee('Charley');
+
+    console.log(accounting.describe());
+    console.log(accounting.printEmployeeInformation());
+    console.log(accounting.changeDepartmentName('Accounting101'));
+    console.log(accounting.describe());
+</pre>
+<blockquote>
+<p>Department: Accounting<br>
+3<br>
+(3) [&quot;Alan&quot;, &quot;James&quot;, &quot;Charley&quot;]<br>
+Department: Accounting101</p>
+</blockquote>
+<h2 id="shorthand-initialisation">Shorthand Initialisation</h2>
+<p>There are some shortcuts when creating classes. let's add another field to our class.</p>
+<pre class="prettyprint">    class Department {
+        id: string;
+        name: string;
+        private employees: string[] = [];
+
+        constructor(i: string, n: string) {
+            this.id = i;
+            this.name = n;
+        }
+
+        // ...
+</pre>
+<p>There is an easier way to create properties.</p>
+<pre class="prettyprint">    class Department {
+        private employees: string[] = [];
+
+        constructor(private id: string, private name: string) { };
+
+        describe(this: Department) {
+            console.log(`Department ${this.id}: ${this.name}.`);
+        }
+
+        // ...
+</pre>
+<p>Now, when we call the describe method we get the following result.</p>
+<blockquote>
+<p>Department a123: Accounting.</p>
+</blockquote>
+<h2 id="%22readonly%22-properties">&quot;Readonly&quot; properties</h2>
+<p>There is another access modifier, <code>readonly</code>. These are used for when a property has been initialised and you don't want anyone to change that property.</p>
+<pre class="prettyprint">    constructor(private readonly id: string, private name: string) { };
+</pre>
+<p>The readonly keyword has been introduced by TypeScript and isn't available in JavaScript. if you try to write to this property you will fail. This adds some extra type safety to our code and makes our intentions clear.</p>
+<h2 id="inheritance">Inheritance</h2>
+<p>We have been able to create our class blueprint and work with it but imagine our department may have different needs. For example, the IT department needs a property for administrators and the accounting department has a need for reports.</p>
+<p>We could have a base department class with properties and methods that all departments need but then we have departments with their own properties and methods. <strong>Inheritance</strong> can help us implement something like this.</p>
+<p>Imagine we changed the Department class in our example to the following.</p>
+<pre class="prettyprint">class ITDepartment extends Department {
+
+}
+
+const accounting = new ITDepartment('a123', 'Accounting');
+</pre>
+<p>Even with this little bit of code we can still use our program and it will return the same results because our new accounting class inherits the constructor and all of the properties and methods from the base Department class.</p>
+<p><strong>Note:</strong> Classes can only inherit from one other class.</p>
+<p>You can add a constructor into your inherited class.</p>
+<pre class="prettyprint">    class ITDepartment extends Department {
+        constructor(id: string, public admins: string[]) {
+            super(id, 'IT');
+            this.admins = admins;
+        }
+    }
+
+    const it = new ITDepartment('d1', ['Alan', 'James']);
+</pre>
+<p>In your inherited class you <strong>MUST</strong> have a <code>super()</code> function call. <code>super()</code> calls the constructor of the base class.</p>
+<p>If we hover over the <code>super()</code> function we see that it takes an id and a name. We pass the inherited classes id to <code>super()</code> and we can hardcode a value for the name. This will now call the constructor of the base class from inside the sub class.</p>
+<p><strong>Note:</strong> in your inherited class you can only add the <code>super()</code> call to the first line of the constructor. All other code for the constructor <strong>MUST</strong> be below the <code>super()</code> call.</p>
+<p><strong>Note:</strong> We are hard coding our department name in our <code>super()</code> call. It is not a parameter in our inherited constructor.</p>
+<p>We can add extra properties into our constructor. In our case we added the <code>admins</code> array.</p>
+<pre class="prettyprint">    constructor(id: string, public admins: string[]) {
+        super(id, 'IT');
+        this.admins = admins;
+    }
+</pre>
+<p>We have to add an admins array into our inherited class call.</p>
+<pre class="prettyprint">    const it = new ITDepartment('d1', ['Alan', 'James']);
+</pre>
+<p>This is our base and inherited class code.</p>
+<pre class="prettyprint">    class Department {
+        private employees: string[] = [];
+
+        constructor(private readonly id: string, private name: string) { };
+
+        describe(this: Department) {
+            console.log(`Department ${this.id}: ${this.name}.`);
+        }
+
+        addEmployee(employee: string) {
+            this.employees.push(employee);
+        }
+
+        changeDepartmentName(newName: string) {
+            this.name = newName;
+        }
+
+        printEmployeeInformation() {
+            console.log(this.employees.length);
+            console.log(this.employees);
+        }
+    }
+
+    class ITDepartment extends Department {
+        constructor(id: string, public admins: string[]) {
+            super(id, 'IT');
+            this.admins = admins;
+        }
+    }
+
+    const it = new ITDepartment('d1', ['Alan', 'James']);
+    it.addEmployee('Alan');
+    it.addEmployee('James');
+    it.addEmployee('Charley');
+
+    it.describe();
+
+    it.printEmployeeInformation();
+</pre>
+<blockquote>
+<p>Department d1: IT.<br>
+3<br>
+(3) [&quot;Alan&quot;, &quot;James&quot;, &quot;Charley&quot;]</p>
+</blockquote>
+<p>We can also log the complete department details.</p>
+<pre class="prettyprint">    console.log(it);
+</pre>
+<blockquote>
+<p>ITDepartment {<br>
+id: &quot;d1&quot;,<br>
+name: &quot;IT&quot;,<br>
+employees: Array(3), admins: Array(2)<br>
+}<br>
+admins: (2) [&quot;Alan&quot;, &quot;James&quot;]<br>
+employees: (3) [&quot;Alan&quot;, &quot;James&quot;, &quot;Charley&quot;]<br>
+id: &quot;d1&quot;<br>
+name: &quot;IT&quot;<br>
+<strong>proto</strong>: Department</p>
+</blockquote>
+<p>Now we can create our accounting department inherited class.</p>
+<pre class="prettyprint">    class AccountingDepartment extends Department {
+        constructor(id: string, private reports: string[]) {
+            super(id, 'Accounting');
+
+        }
+
+        addReport(text: string) {
+            this.reports.push(text);
+        };
+
+        printReports() {
+            console.log(this.reports);
+        }
+    }
+
+    const accounting = new AccountingDepartment('d2', []);
+    accounting.addEmployee('Fred');
+    accounting.addEmployee('Mary');
+
+    accounting.addReport('This is report 1.');
+    accounting.addReport('This is report 2.');
+    accounting.addReport('This is report 3.');
+
+    accounting.describe();
+
+    accounting.printEmployeeInformation();
+
+    console.log(accounting);
+</pre>
+<blockquote>
+<p>Department d2: Accounting.<br>
+2<br>
+(2) [&quot;Fred&quot;, &quot;Mary&quot;]<br>
+AccountingDepartment {<br>
+id: &quot;d2&quot;, name: &quot;Accounting&quot;, employees: Array(2), reports: Array(3)<br>
+}<br>
+employees: (2) [&quot;Fred&quot;, &quot;Mary&quot;]<br>
+id: &quot;d2&quot;name: &quot;Accounting&quot;<br>
+reports: (3) [&quot;This is report 1.&quot;, &quot;This is report 2.&quot;, &quot;This is report 3.&quot;]<br>
+<strong>proto</strong>: Department</p>
+</blockquote>
+<h2 id="overriding-properties--the-%22protected%22-modifier">Overriding properties &amp; the &quot;protected&quot; modifier</h2>
+<p>We can create our own methods that override the methods with the base class.</p>
+<p>In the ITDepartment inherited class we can create the method <code>addEmployees()</code> that overrides the method in the base class.</p>
+<pre class="prettyprint">    addEmployee(name: string) {
+        if (this.name === 'Max') {
+            return;
+        }
+
+        this.employees.push(name);
+    }
+</pre>
+<p>This won't work because<code>employees</code> is private in the base class .</p>
+<p><strong>Important:</strong> private properties are only accessible in the class that they were created.</p>
+<p>We don't want to make <code>employees</code> in the base class <strong>public</strong> because we don't want to access the property from outside the class.</p>
+<p>What we can do is make the property <strong>protected</strong> and then we will be able to access the property from the class that inherits from the base class.</p>
+<p><strong>Note:</strong> <code>name</code> is accessible in the inherited classes method because it has <strong>public</strong> access in the base class.</p>
+<p>We can now add employees from the inherited class.</p>
+<pre class="prettyprint">    const accounting = new AccountingDepartment('d2', []);
+    accounting.addEmployee('Fred');
+    accounting.addEmployee('Mary');
+    accounting.addEmployee('Max');
+    accounting.addEmployee('Manu');
+</pre>
+<blockquote>
+<p>(3) [&quot;Fred&quot;, &quot;Mary&quot;, &quot;Manu&quot;]</p>
+</blockquote>
+<p>We can see that we were using the overwritten method <code>addEmployee()</code> because the name <em>Max</em> doesn't appear in our list of employees.</p>
+<h2 id="getters-and-setters">Getters and setters</h2>
+<h3 id="getters">getters</h3>
+<p>We can add a getter to &quot;get&quot; a private value from our class. In the accounting class we could add a new private field named <code>lastReport</code> to  get a copy of the last report added.</p>
+<pre class="prettyprint">    private lastReport: string;
+
+    get getMostRecentReport() {
+        if (this.lastReport) {
+            return this.lastReport;
+        }
+
+        throw new Error('No report found.');
+    }
+</pre>
+<p>The code below the property is the getter and it returns the last report only if it exists.</p>
+<p>We have to access a report in our constructor.</p>
+<pre class="prettyprint">    constructor(id: string, private reports: string[]) {
+        super(id, 'Accounting');
+        this.lastReport = reports[0];
+    }
+</pre>
+<p>And also in the <code>addReport()</code> method.</p>
+<pre class="prettyprint">    addReport(text: string) {
+        this.reports.push(text);
+        this.lastReport = text;
+    };
+</pre>
+<p>Now we can access the last report by.</p>
+<pre class="prettyprint">    const accounting = new AccountingDepartment('d2', []);
+
+    console.log(accounting.getMostRecentReport);
+</pre>
+<p>This will throw an error because no report exists at present. You can see our custom error report below.</p>
+<blockquote>
+<p>Uncaught Error: No report found.<br>
+at AccountingDepartment.get getMostRecentReport [as getMostRecentReport] (app.ts:39)<br>
+at app.ts:76</p>
+</blockquote>
+<p>We will add the <code>getMostRecentReport()</code> method call after we have created some reports.</p>
+<pre class="prettyprint">    accounting.addReport('This is report 3.');
+
+    console.log(accounting.getMostRecentReport);
+</pre>
+<blockquote>
+<p>This is report 3.</p>
+</blockquote>
+<p><strong>Note:</strong> a getter and setter look like methods but they are still properties so to access them you don't use parentheses.</p>
+<h2 id="setters">setters</h2>
+<p>We can also create a setter to add a new report.</p>
+<pre class="prettyprint">    set setMostRecentReport(value: string) {
+        if (!value) {
+            throw new Error('Please add a new report!');
+        }
+
+        this.addReport(value);
+    }
+</pre>
+<p>After we create an instance of accounting we can add a report.</p>
+<pre class="prettyprint">    const accounting = new AccountingDepartment('d2', []);
+
+    accounting.setMostRecentReport = 'This is a new report.';
+</pre>
+<blockquote>
+<p>AccountingDepartment {<br>
+id: &quot;d2&quot;, name: &quot;Accounting&quot;, employees: Array(3), reports: Array(4), lastReport: &quot;This is report 3.&quot;<br>
+}<br>
+employees: (3) [&quot;Fred&quot;, &quot;Mary&quot;, &quot;Manu&quot;]<br>
+id: &quot;d2&quot;<br>
+lastReport: &quot;This is report 3.&quot;<br>
+name: &quot;Accounting&quot;<br>
+reports: (4) [&quot;This is a new report.&quot;, &quot;This is report 1.&quot;, &quot;This is report 2.&quot;, &quot;This is report 3.&quot;]<br>
+getMostRecentReport: (...)</p>
+</blockquote>
+<h2 id="static-methods-and-properties">Static methods and properties</h2>
+<p>Static methods and properties can be accessed not on an instance of an object. This means that you don't have to call <code>new</code> on a class but you access directly on the class. This is often used for utility methods that you want to use with a class. An example of a class that can be used to access a method would be.</p>
+<pre class="prettyprint">    let pi = Math.PI
+
+    // or
+
+    let number = Math.pow(2);
+</pre>
+<p>You don't have to use a <code>new</code> instance of the Math class to access these methods and properties.  You can create your own static methods and properties in your own classes.</p>
+<p>As an example, what if we want to directly call the Department class without instantiating an object of Department.</p>
+<p>To create a method we use the <code>static</code> keyword in front of the method we are creating. The following code is a simple static method.</p>
+<pre class="prettyprint">    static createEmployee(name: string) {
+        return { name: name };
+    }
+</pre>
+<p>We can call it with.</p>
+<pre class="prettyprint">    const employee1 = Department.createEmployee('Alan');      
+    console.log(employee1);
+</pre>
+<blockquote>
+<p>{name: &quot;Alan&quot;}</p>
+</blockquote>
+<p>This is handy to group methods or properties within a class.</p>
+<p>We can also create a static property.</p>
+<pre class="prettyprint">    class Department {
+        static fiscalYear = 2021;
+</pre>
+<p>And call it with.</p>
+<pre class="prettyprint">    const year = Department.fiscalYear;
+    console.log(year);
+</pre>
+<blockquote>
+<p>2021</p>
+</blockquote>
+<p><strong>Note:</strong> One important point to remember is that you can't access your static methods and classes from your non static members.</p>
+<p>This code produces an error.</p>
+<pre class="prettyprint">    constructor(private readonly id: string, public name: string) {
+        console.log(this.fiscalYear);
+    };
+</pre>
+<h2 id="abstract-classes">Abstract classes</h2>
+<p>An abstract method or abstract field is one that hasn’t had an implementation provided. These members must exist inside an abstract class, which cannot be directly instantiated.</p>
+<p>The role of abstract classes is to serve as a base class for subclasses which do implement all the abstract members. When a class doesn’t have any abstract members, it is said to be concrete.</p>
+<p>We can create an abstract method in <em>Department</em> and then create an implementation in the inherited class. Make sure the property that you are calling is not private but protected.</p>
+<p>We are going to change the <code>describe()</code> method into an abstract method. First make <code>id</code> a protected property in the constructor.</p>
+<pre class="prettyprint">    constructor(protected readonly id: string, public name: string) { };
+</pre>
+<p>Now change <code>describe()</code> to an abstract method by adding the keyword <code>abstract</code> and then removing the body of the method. We also have to add a return type.</p>
+<pre class="prettyprint">    abstract describe(this: Department): void;
+</pre>
+<p>Now you have defined how your abstract method will look.</p>
+<p>You will notice an error and that is the class that our abstracted method is in must be an abstract class. We can do this by changing the class name.</p>
+<pre class="prettyprint">    abstract class Department {
+</pre>
+<p>Now we see that we have ended up with two more errors. We have to add a <code>describe()</code> method to both of our extended classes.</p>
+<pre class="prettyprint">    class ITDepartment extends Department {
+        constructor(id: string, public admins: string[]) {
+            super(id, 'IT');
+            this.admins = admins;
+        }
+
+        describe() {
+            console.log(`Department ID: ${this.id}.`);
+        }
+    }
+</pre>
+<p>We can use the same method implementation in AccountingDepartment or we can create another implementation. In our case we'll use the same implementation.</p>
+<pre class="prettyprint">    class AccountingDepartment extends Department {
+        private lastReport: string;
+
+        describe() {
+            console.log(`Department ID: ${this.id}.`);
+        }
+
+        get getMostRecentReport() {
+</pre>
+<p>We can now see the changes in our output.</p>
+<blockquote>
+<p>{name: &quot;Alan&quot;}<br>
+2021<br>
+Department ID: d1.<br>
+3<br>
+(3) [&quot;Charley&quot;, &quot;Alan&quot;, &quot;James&quot;]<br>
+ITDepartment {id: &quot;d1&quot;, name: &quot;IT&quot;, employees: Array(3), admins: Array(0)}<br>
+This is report 3.<br>
+Department ID: d2.<br>
+3<br>
+(3) [&quot;Fred&quot;, &quot;Mary&quot;, &quot;Manu&quot;]<br>
+AccountingDepartment {id: &quot;d2&quot;, name: &quot;Accounting&quot;, employees: Array(3), reports: Array(4), lastReport:<br>
+&quot;This is report 3.&quot;}</p>
+</blockquote>
+<p>Another important note is that you can't instantiate the Department class anymore. Now it is basically just a class that is there to be inherited from.</p>
+<h2 id="singletons--private-constructors">Singletons &amp; Private Constructors</h2>
+<p>In the AccountingDepartment object we only want to create one instance of that object. We don't want different multiple instances of the object. We won't do this for ITDepartment because there may be different IT departments.</p>
+<p>Private contstructors using the Singleton pattern can allow us to do this.</p>
+<p>We change the constructor in our AccountingDepartment instance into a private constructor.</p>
+<pre class="prettyprint">        private constructor(id: string, private reports: string[]) {
+        super(id, 'Accounting');
+        this.lastReport = reports[0];
+    }
+</pre>
+<p>Now we need to create a method to be able to get that instance. We also need to create a static property named instance that is of type AccountingDepartment.</p>
+<pre class="prettyprint">    private static instance: AccountingDepartment;
+
+    static getInstance() {
+        if (AccountingDepartment.instance) {
+            return this.instance;
+        } else {
+            this.instance = new AccountingDepartment('d2', []);
+            return this.instance;
+        }
+    }
+</pre>
+<p>In the calling code we need to call <code>getInstance()</code> and we can do this with.</p>
+<pre class="prettyprint">    // const accounting = new AccountingDepartment('d2', []);
+    const accounting = AccountingDepartment.getInstance();
+</pre>
+<p>When we call the instance using <code>getInstance()</code> it will check to see if an AccountingDepartment instance has been created and if it has it will return it. If not it will create a new instance of the object.</p>
+<p>The first time through it will not find an instance so it will fall through to the else clause and create one.</p>
+<pre class="prettyprint">    const accounting = AccountingDepartment.getInstance();
+    const accounting2 = AccountingDepartment.getInstance();
+</pre>
+<p>If we try to  create another instance (accounting2) we will call <code>getInstance()</code> and this time when the method runs it will find an instance of accounting so it will return the previously created instance.</p>
+<p>It <strong>won't</strong> let you create a second instance of AccountDepartment. If you log() account and account2 you will find that they are the same instance.</p>
+<p>The Singleton pattern is probably something you wouldn't use a lot but it comes in handy to make sure you only have one instance of an object.</p>
+<p>The object created is called a Singleton class.</p>
+<h2 id="interfaces">Interfaces</h2>
+<p>An interface describes the structure of an object. We can use it to describe what an object looks like.</p>
+<pre class="prettyprint">    interface Person {
+        name: string;
+        age: number;
+
+        greet(phrase: string): void;
+    }
+</pre>
+<p>What can we use this for? We can use it to describe a type of object.</p>
+<p>We can now assign a type to an object</p>
+<pre class="prettyprint">    let user1: Person;
+</pre>
+<p>Now we can fill in user1's details.</p>
+<pre class="prettyprint">    user1 = {
+        'name': 'Alan',
+        'age': 68,
+        greet(phrase: string) {
+            console.log(`${phrase} ${this.name}!`);
+        }
+    }
+</pre>
+<p>User1 is a valid object because it satisfies the definition of the Person Interface. We can call this object with.</p>
+<pre class="prettyprint">    user1.greet('Hello ');
+</pre>
+<blockquote>
+<p>Hello  Alan!</p>
+</blockquote>
+<p>This is our interface and it allows us to define the structure of an object. We can use it as a type to check that our object has the same structure as our interface.</p>
+<p>We could if we wanted to change the interfaces to a type and it would work as before.</p>
+<pre class="prettyprint">    type Person = {
+        name: string;
+        age: number;
+
+        greet(phrase: string): void;
+    }
+</pre>
+<p>The Interface isn't exactly the same as a type. The reason to use an Interface is because it is super clear what you want your object to define.</p>
+<p>Another thing you can do with an Interface (and a type) is to implement that Interface in a class.</p>
+<p>An interface can be used as a contract that a class has to adhere to.</p>
+<pre class="prettyprint">    interface Greetable {
+        name: string;
+
+        greet(phrase: string): void;
+    }
+</pre>
+<p>Now we can use the interface when we are building up our new class.</p>
+<pre class="prettyprint">    class Person implements Greetable {
+        name: string;
+        age = 30;
+
+        constructor(n: string) {
+            this.name = n;
+        }
+
+        greet(phrase: string) {
+            console.log(`${phrase} ${this.name}!`);
+        };
+    }
+</pre>
+<p><strong>Note:</strong> you can use multiple interfaces in a class unlike inheritance.</p>
+<p>Our class has to have the <code>name</code> property and the <code>greet()</code> method and then we are free to add other properties and methods. In our case we will add our <code>age</code> property.</p>
+<p>Now we can call our class.</p>
+<pre class="prettyprint">    let user1: Greetable;
+
+    user1 = new Person('James');
+
+    user1.greet('Hello, I\'m');
+</pre>
+<blockquote>
+<p>Hello, I'm James!</p>
+</blockquote>
+<p>The main takeaway here is that our Interfaces could been used to share functionality amongst a number of different classes.</p>
+<h2 id="why-use-interfaces">Why use Interfaces?</h2>
+<p>The main reason is that we don't have to redefine that same code every time we create a new class. If we know we need a name and a greet method in a number of classes that we are about to create we can create an interfaces with that functionality and then when we use implements greetable() on our classes we know that they will have the name and greet features. So we are enforcing a structure in our new classes that have implemented greetable(). This allows us to write more powerful software.</p>
+<h2 id="readonly-interface-properties">Readonly Interface properties</h2>
+<p>On an interface you can create a <code>readonly</code> property. You can't create a <code>public</code> or <code>private</code> property.</p>
+<p>If you set an Interface property as <code>readonly</code> it means that you can only set the property once and after that it is <code>readonly</code> so that it can't be changed after the object has been initialised.</p>
+<p>If I make <em>name</em> a <code>readonly</code> string.</p>
+<pre class="prettyprint">    readonly name: string;
+</pre>
+<p>I can't do this after my class has been instantiated.</p>
+<pre class="prettyprint">    user1.name = 'Fred';
+</pre>
+<h2 id="extending-interfaces">Extending Interfaces</h2>
+<p>You can also implement inheritance in interfaces.</p>
+<p>Let's create a new interface.</p>
+<pre class="prettyprint">    interface Named {
+        readonly name: string;
+    }
+</pre>
+<p>We have taken the <code>name</code> property out of the greetable() interface.</p>
+<p>We can use this by adding the interface to class Person.</p>
+<pre class="prettyprint">    class Person implements Greetable, Named {
+</pre>
+<p>A better method would be to add it to greetable().</p>
+<pre class="prettyprint">    interface Greetable extends Named {
+        greet(phrase: string): void;
+    }
+</pre>
+<p>So now when we use greetable() we know the class has to have greetable's structure and that it also inherits the Named interface structure.</p>
+<p>So now if we do this it won't work.</p>
+<pre class="prettyprint">    class Person implements Greetable {
+        // name: string;
+        age = 30;
+</pre>
+<p>Because Greetable inherits from Named.</p>
+<blockquote>
+<p>class Person<br>
+Class 'Person' incorrectly implements interface 'Greetable'.<br>
+Property 'name' is missing in type 'Person' but required in type 'Greetable'.ts(2420)<br>
+app.ts(2, 14): 'name' is declared here.</p>
+</blockquote>
+<p>This can be handy because some of your classes may only want to implement the <code>greet()</code> method and others may only want to implement the <code>name</code> property.</p>
+<p>Once again you can merge multiple interfaces into one interface.</p>
+<p>e.g.</p>
+<pre class="prettyprint">    interface Greetable extends Named, AnotherInterface {
+</pre>
+<p>Remember that you can only inherit from one class.</p>
+<p>This won't work.</p>
+<pre class="prettyprint">    interface AnotherInterface {
+        gender: string;
+    }
+
+    class ITDepartment extends Department, AnotherInterface {
+        gender = 'Male';
+</pre>
+<p>So an interface can inherit multiple interfaces but a class can't. This is handy to know.</p>
+<h2 id="interfaces-as-function-types">Interfaces as Function Types</h2>
+<p>Remember that you can create a custom type.</p>
+<pre class="prettyprint">    type addFn = (a: number, b: number) =&gt; number;
+
+    let add: addFn;
+
+    add = (n1: number, n2: number) =&gt; {
+        return n1 + n2;
+    }
+</pre>
+<p>You can also set up a function type as an interface.</p>
+<pre class="prettyprint">    interface addFn {
+        (a: number, b: number): number;
+    }
+
+    let add: addFn;
+
+    add = (n1: number, n2: number) =&gt; {
+        return n1 + n2;
+    }
+</pre>
+<p>So now in your interface you have an anonymous function.</p>
+<p>The function interface is just another way of doing a function as a type. Using a function as a type is probably more common but using function interfaces is a little bit shorter and is a nice way of creating functions.</p>
+<h2 id="optional-parameters--properties">Optional parameters &amp; properties</h2>
+<p>We are going to look at objects for interfaces again. You can also provide optional properties in interfaces and classes.</p>
+<pre class="prettyprint">    interface Named {
+        readonly name: string;
+        outputName?: string;
+    }
+</pre>
+<p>The question mark after <code>outputName</code> specifies that the property name is optional. We can use it as an optional property or leave it out of classes that implement the Named interface.</p>
+<pre class="prettyprint">    class Person implements Greetable {
+        name: string;
+        age = 30;
+        outputName = 'Alan';
+
+        constructor(n: string) {
+            this.name = n;
+        }
+
+        greet(phrase: string) {
+            console.log(`${phrase} ${this.name}!`);
+
+            if (this.outputName) {
+                console.log(`\tMy grandfather is ${this.outputName}.`);
+            }
+        };
+    }
+</pre>
+<p>We can call this by.</p>
+<pre class="prettyprint">    user1 = new Person('James');
+
+    user1.greet('Hello, I\'m');
+</pre>
+<blockquote>
+<p>Hello, I'm James!<br>
+My grandfather is Alan.</p>
+</blockquote>
+<p><strong>Note:</strong> you can also mark methods as optional.</p>
+<pre class="prettyprint">    myMethod?() {
+
+    }
+</pre>
+<p><strong>Note:</strong> you can make properties optional in interfaces, classes and even in constructors. This gives you more flexibility in your interfaces and classes.</p>
+<h4 id="final-code">final code</h4>
+<pre class="prettyprint">    interface Named {
+        readonly name: string;
+        outputName?: string;
+    }
+
+    interface Greetable extends Named {
+        greet(phrase: string): void;
+    }
+
+    class Person implements Greetable {
+        name: string;
+        age = 30;
+        outputName = 'Alan';
+
+        constructor(n: string) {
+            this.name = n;
+        }
+
+        greet(phrase: string) {
+            console.log(`${phrase} ${this.name}!`);
+
+            if (this.outputName) {
+                console.log(`\tMy grandfather is ${this.outputName}.`);
+            }
+        };
+    }
+
+    let user1: Greetable;
+
+    user1 = new Person('James');
+
+    user1.greet('Hello, I\'m');
+</pre>
+<h2 id="compiling-interfaces-to-javascript">Compiling interfaces to JavaScript</h2>
+<p>You won't find any reference to an interface in your app.js code. You will just see your function and your constructor function. There is a good reason for this. There is no translation of an Interface in JavaScript as it only exists in TypeScript. It is only available during development and compilation.</p>
+<p>Interfaces are a pure development feature that allows you to write better code following clear rules.</p>
+
+</div><!-- starter-template -->
+</div><!-- /.container -->
+
+<!-- Bootstrap core JavaScript
+================================================== -->
+<!-- Placed at the end of the document so the pages load faster -->
+<script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/9.12.0/styles/default.min.css"/>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/9.12.0/highlight.min.js"/>
+<script>hljs.initHighlightingOnLoad();</script>
+
+<script src="assets/js/jquery.min.js"></script>
+<script src="assets/js/bootstrap.min.js"></script>
+</body>
+</html>
