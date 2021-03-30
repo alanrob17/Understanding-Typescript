@@ -898,6 +898,54 @@ My grandfather is Alan.</p>
 <h2 id="compiling-interfaces-to-javascript">Compiling interfaces to JavaScript</h2>
 <p>You won't find any reference to an interface in your app.js code. You will just see your function and your constructor function. There is a good reason for this. There is no translation of an Interface in JavaScript as it only exists in TypeScript. It is only available during development and compilation.</p>
 <p>Interfaces are a pure development feature that allows you to write better code following clear rules.</p>
+<h2 id="additional-notes">Additional notes</h2>
+<h3 id="objects-with-functions">Objects with functions</h3>
+<p>As we know objects allow us to store data in a single place. When calling functions, we can pass an object as an argument. This lets you pass all that related data to a function without having to pass in a number of individual arguments. All you need is the single object argument as shown below:</p>
+<p>With TypeScript we have to describe the object we are passing in as a parameter.</p>
+<pre class="prettyprint">    let printBook = (book: { title: string; author: string; pages: number; }) =&gt; {
+        return `${book.title} by ${book.author}.`;
+    };
+</pre>
+<p>In the example above we are passing in a book object so we have to describe the object and we do this with <code>book: { title: string; author: string; pages: number; }</code></p>
+<p>A complete example is shown below.</p>
+<pre class="prettyprint">    let printBook = (book: { title: string; author: string; pages: number; }) =&gt; {
+        return `${book.title} by ${book.author}.`;
+    };
+
+    let printSummary = (book: { title: string; author: string; pages: any; }) =&gt; {
+        return {
+            summary: `${book.title} by ${book.author}.`,
+            pageCountSummary: `${book.title} has ${book.pages} pages.`
+        };
+    };
+
+    const myBook = {
+        title: '1984',
+        author: 'George Orwell',
+        pages: 325
+    };
+
+    let otherBook = {
+        title: 'A People\'s History',
+        author: 'Howard Zinn',
+        pages: 723
+    };
+
+    let bookText = printBook(myBook);
+    console.log(bookText);
+    bookText = printBook(otherBook);
+    console.log(bookText);
+
+    console.log('\n');
+
+    let print = printSummary(myBook);
+    console.log(print.summary);
+    console.log(print.pageCountSummary);
+
+    print = printSummary(otherBook);
+    console.log(print.summary);
+    console.log(print.pageCountSummary);
+</pre>
 
 </div><!-- starter-template -->
 </div><!-- /.container -->

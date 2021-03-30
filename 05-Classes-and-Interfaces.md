@@ -1118,3 +1118,61 @@ We can call this by.
 You won't find any reference to an interface in your app.js code. You will just see your function and your constructor function. There is a good reason for this. There is no translation of an Interface in JavaScript as it only exists in TypeScript. It is only available during development and compilation.
 
 Interfaces are a pure development feature that allows you to write better code following clear rules.
+
+## Additional notes
+
+### Objects with functions
+
+As we know objects allow us to store data in a single place. When calling functions, we can pass an object as an argument. This lets you pass all that related data to a function without having to pass in a number of individual arguments. All you need is the single object argument as shown below:
+
+With TypeScript we have to describe the object we are passing in as a parameter.
+
+```
+    let printBook = (book: { title: string; author: string; pages: number; }) => {
+        return `${book.title} by ${book.author}.`;
+    };
+```
+
+In the example above we are passing in a book object so we have to describe the object and we do this with ``book: { title: string; author: string; pages: number; }``
+
+A complete example is shown below.
+
+```
+    let printBook = (book: { title: string; author: string; pages: number; }) => {
+        return `${book.title} by ${book.author}.`;
+    };
+
+    let printSummary = (book: { title: string; author: string; pages: any; }) => {
+        return {
+            summary: `${book.title} by ${book.author}.`,
+            pageCountSummary: `${book.title} has ${book.pages} pages.`
+        };
+    };
+
+    const myBook = {
+        title: '1984',
+        author: 'George Orwell',
+        pages: 325
+    };
+
+    let otherBook = {
+        title: 'A People\'s History',
+        author: 'Howard Zinn',
+        pages: 723
+    };
+
+    let bookText = printBook(myBook);
+    console.log(bookText);
+    bookText = printBook(otherBook);
+    console.log(bookText);
+
+    console.log('\n');
+
+    let print = printSummary(myBook);
+    console.log(print.summary);
+    console.log(print.pageCountSummary);
+
+    print = printSummary(otherBook);
+    console.log(print.summary);
+    console.log(print.pageCountSummary);
+```
