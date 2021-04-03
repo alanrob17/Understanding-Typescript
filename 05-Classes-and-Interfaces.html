@@ -59,7 +59,7 @@ blockquote {
                         <a class="nav-link" href="#">Home</a>
                     </li>
                     <li class="nav-item active">
-                        <a class="nav-link" href="#">04 - Classes and Interfaces <span class="sr-only">(current)</span></a>
+                        <a class="nav-link" href="#">05 - Classes and Interfaces <span class="sr-only">(current)</span></a>
                     </li>
                     <li class="nav-item">
                         <a class="nav-link" href="#">About</a>
@@ -901,14 +901,14 @@ My grandfather is Alan.</p>
 <h2 id="additional-notes">Additional notes</h2>
 <h3 id="objects-with-functions">Objects with functions</h3>
 <p>As we know objects allow us to store data in a single place. When calling functions, we can pass an object as an argument. This lets you pass all that related data to a function without having to pass in a number of individual arguments. All you need is the single object argument as shown below:</p>
-<p>With TypeScript we have to describe the object we are passing in as a parameter.</p>
+<p>With TypeScript we have to describe the object we are passing in as a parameter and we do this below.</p>
 <pre class="prettyprint">    let printBook = (book: { title: string; author: string; pages: number; }) =&gt; {
         return `${book.title} by ${book.author}.`;
     };
 </pre>
-<p>In the example above we are passing in a book object so we have to describe the object and we do this with <code>book: { title: string; author: string; pages: number; }</code></p>
+<p>In the example above we are passing in a book object so we have to describe the object and we do this with <code>book: { title: string; author: string; pages?: number; }</code></p>
 <p>A complete example is shown below.</p>
-<pre class="prettyprint">    let printBook = (book: { title: string; author: string; pages: number; }) =&gt; {
+<pre class="prettyprint">    let printBook = (book: { title: string; author: string; pages?: number; }) =&gt; {
         return `${book.title} by ${book.author}.`;
     };
 
@@ -938,17 +938,18 @@ My grandfather is Alan.</p>
 
     console.log('\n');
 
-    let print = printSummary(myBook);
-    console.log(print.summary);
-    console.log(print.pageCountSummary);
+    let printSum = printSummary(myBook);
+    console.log(printSum.summary);
+    console.log(printSum.pageCountSummary);
 
-    print = printSummary(otherBook);
-    console.log(print.summary);
-    console.log(print.pageCountSummary);
+    printSum = printSummary(otherBook);
+    console.log(printSum.summary);
+    console.log(printSum.pageCountSummary);
 </pre>
 
 </div><!-- starter-template -->
 </div><!-- /.container -->
+
 
 <!-- Bootstrap core JavaScript
 ================================================== -->
