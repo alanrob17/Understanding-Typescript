@@ -1176,3 +1176,5 @@ A complete example is shown below.
     console.log(print.summary);
     console.log(print.pageCountSummary);
 ```
+
+This is a test message.
