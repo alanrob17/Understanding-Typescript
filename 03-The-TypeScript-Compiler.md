@@ -71,7 +71,7 @@ We can include and exclude .ts files and folders and we do this after the *compi
 
 **Note:** this is only to show how to exclude folders. The ``node_modules`` folder is automatically ignored anyway. Our include option would also force us to ignore ``node_modules`` anyway.
 
-**Note:** do the excludes first and then the includes as the thes options filter down.
+**Note:** do the excludes first and then the includes as the these options filter down.
 
 You can work with wildcards for files.
 
