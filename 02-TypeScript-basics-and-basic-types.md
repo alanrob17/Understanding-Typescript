@@ -217,7 +217,7 @@ We can change this to key-value pairs to describe the type of object.
 
 This will remove the property error and show us the intellisense for the ``person`` object again.
 
-Once again this is not a good practice.
+Once again this is not a good practice. We should let TypeScript infer the types as we did in the original object.
 
 ## Nested objects & types
 
